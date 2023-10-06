@@ -45,37 +45,38 @@ class UserTree {
     public:
         UserTree() : root(nullptr) {}
 
-        int insert(User user) {
-            return insertHelper(root, user);
+        void insert(User user)
+        {
+            root = insertHelper(root, user);
         }
-        User *search(string username) {
+        User *search(string username)
+        {
             return searchHelper(root, username);
         }
-        User *login(string username, string pw) {
+        User *login(string username, string pw)
+        {
             User *user = searchHelper(root, username);
             if (user != nullptr && user->password == pw)
                 return user;
             return nullptr;
         }
-    private:
-        int insertHelper(TreeNode *node, User user) {
-            if (node != nullptr) {
-                if (user.username < node->user.username)
-                    return insertHelper(node->left, user);
-                else if (user.username > node->user.username)
-                    return insertHelper(node->right, user);
-                else {
-                    cout << "username đã tồn tại.\n";
-                    return 0;
-                }
 
-            }
-            node = new TreeNode(user);
-            cout << user.username << user.password;
+    private:
+        TreeNode *insertHelper(TreeNode *node, User user)
+        {
             if (node == nullptr)
-                return 0;
+                return new TreeNode(user);
+
+            if (user.username < node->user.username)
+                node->left = insertHelper(node->left, user);
+            else if (user.username > node->user.username)
+                node->right = insertHelper(node->right, user);
             else
-                return 1;
+            {
+                cout << "username đã tồn tại.\n";
+                return node;
+            }
+            return node;
         }
 
         User *searchHelper(TreeNode *node, string username) {
@@ -87,18 +88,6 @@ class UserTree {
                 return searchHelper(node->left, username);
             else
                 return searchHelper(node->right, username); 
-        }
-};
-class ProjectList {
-    private:
-        int n;
-        Project projects[MAX];
-    
-    public:
-        ProjectList(): n(0) {}
-        void addProject(Project project) {
-            projects[n] = project;
-            ++n;
         }
 };
 

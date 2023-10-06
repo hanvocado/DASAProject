@@ -64,9 +64,9 @@ class UserTree
     public:
         UserTree() : root(nullptr) {}
 
-        int insert(User user)
+        void insert(User user)
         {
-            return insertHelper(root, user);
+            root = insertHelper(root, user);
         }
         User *search(string username)
         {
@@ -81,25 +81,21 @@ class UserTree
         }
 
     private:
-        int insertHelper(TreeNode *node, User user)
+        TreeNode *insertHelper(TreeNode *node, User user)
         {
-            if (node != nullptr)
-            {
-                if (user.username < node->user.username)
-                    return insertHelper(node->left, user);
-                else if (user.username > node->user.username)
-                    return insertHelper(node->right, user);
-                else
-                {
-                    cout << "username đã tồn tại.\n";
-                    return 0;
-                }
-            }
-            node = new TreeNode(user);
             if (node == nullptr)
-                return 0;
+                return new TreeNode(user);
+
+            if (user.username < node->user.username)
+                node->left = insertHelper(node->left, user);
+            else if (user.username > node->user.username)
+                node->right = insertHelper(node->right, user);
             else
-                return 1;
+            {
+                cout << "username đã tồn tại.\n";
+                return node;
+            }
+            return node;
         }
 
         User *searchHelper(TreeNode *node, string username)
@@ -118,10 +114,10 @@ class UserTree
 class DateList
 {
     private:
-        Date *head;
-        Date *tail;
     
     public:
+        Date *head;
+        Date *tail;
         DateList(): head(nullptr), tail(nullptr) {}
 
         Date *findDate(int d, int m, int y) {
@@ -211,7 +207,7 @@ int main()
                 if (user != nullptr)
                 {
                     currentUser = user;
-                    cout << "Đăng nhập thành công";
+                    cout << "Đăng nhập thành công\n\n";
                 }
                 else
                     cout << "Sai thông tin đăng nhập!\n";
@@ -270,6 +266,31 @@ int main()
                 }
                 break;
             }
+            case 5:
+                if (activeDate->next)
+                    activeDate = activeDate->next;
+                else
+                    cout << "Not found\n";
+                break;
+            case 6:
+                if (activeDate->prev)
+                    activeDate = activeDate->prev;
+                else
+                    cout << "Not found\n";
+                break;
+            case 7:
+                return 0;
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+                break;
         }
     }
+    while (dates.head)
+    {
+        Date *temp = dates.head;
+        dates.head = dates.head->next;
+        delete temp;
+    }
+
+    return 0;
 }
