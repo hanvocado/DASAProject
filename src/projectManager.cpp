@@ -28,7 +28,7 @@ class UserTree {
         }
         User *login(string username, string pw) {
             User *user = searchHelper(root, username);
-            if (user != nullptr || user->password == pw)
+            if (user != nullptr && user->password == pw)
                 return user;
             return nullptr;
         }
@@ -73,7 +73,7 @@ int main() {
     int flag = 0;
     while (flag == 0) {
         cout << "1. Đăng nhập\n";
-        cout << "2. Đăng ký (Lưu ý cần đăng nhập sau khi đăng ký)\n";
+        cout << "2. Đăng ký\n";
         cin >> option;
         switch (option)
         {
