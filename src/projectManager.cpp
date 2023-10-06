@@ -20,32 +20,42 @@ class UserTree {
     public:
         UserTree() : root(nullptr) {}
 
-        void insert(User user) {
-            root = insertHelper(root, user);
+        int insert(User user) {
+            return insertHelper(root, user);
         }
         User *search(string username) {
             return searchHelper(root, username);
         }
         User *login(string username, string pw) {
             User *user = searchHelper(root, username);
-            if (user != nullptr || user->password == pw)
+            if (user == nullptr) {
+                cout << "search found null\n";
+                return nullptr;
+            }
+            cout << pw.compare(user->password);
+            if (pw.compare(user->password) == 0)
                 return user;
             return nullptr;
         }
     private:
-        TreeNode *insertHelper(TreeNode *node, User user) {
-            if (node == nullptr)
-                return new TreeNode(user);
-            
-            if (user.username < node->user.username)
-                node->left = insertHelper(node->left, user);
-            else if (user.username > node->user.username)
-                node->right = insertHelper(node->right, user);
-            else {
-                cout << "username đã tồn tại.\n";
-                return node;
+        int insertHelper(TreeNode *node, User user) {
+            if (node != nullptr) {
+                if (user.username < node->user.username)
+                    return insertHelper(node->left, user);
+                else if (user.username > node->user.username)
+                    return insertHelper(node->right, user);
+                else {
+                    cout << "username đã tồn tại.\n";
+                    return 0;
+                }
+
             }
-            return node;
+            node = new TreeNode(user);
+            cout << user.username << user.password;
+            if (node == nullptr)
+                return 0;
+            else
+                return 1;
         }
 
         User *searchHelper(TreeNode *node, string username) {
@@ -73,7 +83,7 @@ int main() {
     int flag = 0;
     while (flag == 0) {
         cout << "1. Đăng nhập\n";
-        cout << "2. Đăng ký (Lưu ý cần đăng nhập sau khi đăng ký)\n";
+        cout << "2. Đăng ký\n";
         cin >> option;
         switch (option)
         {
