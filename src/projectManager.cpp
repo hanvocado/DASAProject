@@ -28,12 +28,7 @@ class UserTree {
         }
         User *login(string username, string pw) {
             User *user = searchHelper(root, username);
-            if (user == nullptr) {
-                cout << "search found null\n";
-                return nullptr;
-            }
-            cout << pw.compare(user->password);
-            if (pw.compare(user->password) == 0)
+            if (user != nullptr && user->password == pw)
                 return user;
             return nullptr;
         }
