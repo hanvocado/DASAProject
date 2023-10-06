@@ -3,6 +3,31 @@ using namespace std;
 
 const int MAX = 500;
 
+struct Date {
+    int d;
+    int m;
+    int y;
+    Date(int dd, int mm, int yyyy): d(dd), m(mm), y(yyyy) {}
+};
+
+struct Project {
+    int id;
+    string title;
+    string managerUsername;
+    string membersUsername[50];
+    Date createdOn;
+    Date dueDate;
+    TaskList tasks;
+};
+struct Task {
+    string title;
+    string description;
+    int status = 0; //0=todo, 1=completed, -1=closed
+};
+struct TaskList {
+    Task arr[100];
+    int n;
+};
 struct User {
     string username;
     string password;
@@ -62,6 +87,18 @@ class UserTree {
                 return searchHelper(node->left, username);
             else
                 return searchHelper(node->right, username); 
+        }
+};
+class ProjectList {
+    private:
+        int n;
+        Project projects[MAX];
+    
+    public:
+        ProjectList(): n(0) {}
+        void addProject(Project project) {
+            projects[n] = project;
+            ++n;
         }
 };
 
