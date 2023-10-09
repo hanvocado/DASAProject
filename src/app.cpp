@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <cctype>
+#include <algorithm>
 #include <windows.h>
 using namespace std;
 
@@ -99,25 +101,41 @@ int chooseTaskIndex()
     return index;
 }
 
+bool displayMore(int i)
+{
+    if (i > 4 && i % 5 == 0)
+    {
+        char ch;
+        cout << "Hiển thị thêm? (y/n)\n";
+        cin >> ch;
+        if (ch != 'y' && ch != 'Y')
+            return false;
+        else
+            return true;
+    }
+    return true;
+}
+
+void displayTask(Task task)
+{
+    cout << "\t\t\t Title: " << task.title << endl;
+    cout << "\t\t\t Deadline: " ;
+    displayDate(task.pDeadline);
+    cout << "\t\t\t Description: " << task.description << endl;
+    cout << "\t\t\t      ------\n";
+}
+
 void displayTasks(TaskAList tasks)
 {
+    if (tasks.n <= 0) return;
+
+    cout << "\tCông việc chưa hoàn thành: \n";
     for (int i = 0; i < tasks.n; i++)
     {
-        if (i > 4 && i % 5 == 0)
-        {
-            char ch = 'n';
-            cout << "Hiện thêm? (y/n) ";
-            cin >> ch;
-            if (ch != 'y' && ch != 'Y')
-                break;
-        }
-        cout << "\t\t\t" << i + 1 << ". Title: " << tasks.arr[i].title << endl;
-        cout << "\t\t\t   Description: " << tasks.arr[i].description << endl;
-        cout << "\t\t\t   Deadline: ";
+        if (!displayMore(i)) return;
+        cout << "\t  " << i + 1 << ". ";
         displayDate(tasks.arr[i].pDeadline);
-        cout << "\n\t\t\t   ";
-        displayStatus(tasks.arr[i].completed);
-        cout << "\t\t\t        ------\n";
+        cout << "  |  " << tasks.arr[i].title << endl;
     }
 }
 
@@ -196,34 +214,35 @@ void editTask(User *currentUser, int pos)
     while (editOption != 5)
     {
         string title, des;
-        cout << "\t\t\t|___1. Cập nhật tiêu đề____|\n";
-        cout << "\t\t\t|___2. Cập nhật chú thích__|\n";
-        cout << "\t\t\t|___3. Đánh dấu hoàn thành_|\n";
-        cout << "\t\t\t|___4. Thay đổi deadline___|\n";
-        cout << "\t\t\t|___5. Trở lại trang chủ___|\n";
+        cout << "\t\t\t|___1. Đánh dấu hoàn thành__|\n";
+        cout << "\t\t\t|___2. Chỉnh sửa tiêu đề____|\n";
+        cout << "\t\t\t|___3. Chỉnh sửa chú thích__|\n";
+        cout << "\t\t\t|___4. Chỉnh sửa deadline___|\n";
+        cout << "\t\t\t|___5. Trở lại trang chủ____|\n";
         cin >> editOption;
         switch (editOption)
         {
         case 1:
+        {
+            currentUser->uncompletedTasks.arr[pos].completed = true;
+            Task *task = new Task(currentUser->uncompletedTasks.arr[pos]);
+            push(currentUser->completedTasks, new Node(task));
+            removeTask(currentUser->uncompletedTasks, pos);
+            home(currentUser);
+            break;
+        }
+        case 2:
         {
             cout << "Enter new title: ";
             getline(cin, title);
             currentUser->uncompletedTasks.arr[pos].title = title;
             break;
         }
-        case 2:
+        case 3:
         {
             cout << "Enter new description: ";
             getline(cin, des);
             currentUser->uncompletedTasks.arr[pos].description = des;
-            break;
-        }
-        case 3:
-        {
-            currentUser->uncompletedTasks.arr[pos].completed = true;
-            Task *task = new Task(currentUser->uncompletedTasks.arr[pos]);
-            push(currentUser->completedTasks, new Node(task));
-            removeTask(currentUser->uncompletedTasks, pos);
             break;
         }
         case 4:
@@ -235,12 +254,50 @@ void editTask(User *currentUser, int pos)
         case 5:
         {
             home(currentUser);
+            break;
         }
         default:
             cout << invalidChoice << endl;
             break;
         }
     }
+}
+
+// Task binarySearch(TaskAList li, string t)
+// {
+//     //sort trên deadline nhung kiem tren title??
+//     int L = 0;
+//     int R = li.n - 1;
+//     string title;
+//     int M;
+//     transform(t.begin(), t.end(), t.begin(), [](unsigned char c) { return std::tolower(c); });
+
+//     while (L <= R)
+//     {
+//         M = (L + R) / 2;
+//         title = li.arr[M].title;
+//         transform(title.begin(), title.end(), title.begin(), [](unsigned char c) { return std::tolower(c); });
+//         if (title.find(t) != string::npos)
+//             return li.arr[M];
+//         else if (title.compare(t) <)
+//     }
+// }
+
+Task *linearSearch(TaskAList li, string t)
+{
+    transform(t.begin(), t.end(), t.begin(), [](unsigned char c)
+              { return std::tolower(c); });
+    string title; 
+    for (int i = 0; i < li.n; i++)
+    {
+        title = li.arr[i].title;
+        transform(title.begin(), title.end(), title.begin(), [](unsigned char c)
+                  { return std::tolower(c); });
+
+        if (li.arr[i].title.find(t) != string::npos)
+            return &(li.arr[i]);
+    }
+    return nullptr;
 }
 
 void push(TaskStack &stack, Node *p)
@@ -263,14 +320,7 @@ void displayTasks(TaskStack stack)
     int i = 0;
     for (Node *p = stack.pTop; p != nullptr; p = p->next)
     {
-        if (i > 4 && i % 5 == 0)
-        {
-            char ch;
-            cout << "Hiển thị thêm? (y/n)\n";
-            cin >> ch;
-            if (ch != 'y' && ch != 'Y')
-                break;
-        }
+        if (!displayMore(i)) return;
         cout << "Tiêu đề: " << p->pTask->title << endl;
         cout << "Chú thích: " << p->pTask->description << endl;
         i++;
@@ -284,7 +334,9 @@ TreeNode *insertUser(TreeNode *root, User req)
 
     if (root->user.username == req.username)
     {
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
         cout << usernameExisted << endl;
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
         return root;
     }
     if (root->user.username > req.username)
@@ -322,7 +374,6 @@ User *login(User *currentUser)
     {
         currentUser = &(node->user);
         SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-        cout << "\n\t\t\t\t Xin chào " << currentUser->username << endl << endl;
     }
     else
     {
@@ -349,6 +400,7 @@ User *welcome()
     User *currentUser = nullptr;
     int option = -1;
 
+    printAppName();
     while (currentUser == nullptr)
     {
         cout << "\t 1. Đăng nhập \t\t 2. Đăng ký \t\t 3.Thoát\n";
@@ -367,6 +419,7 @@ User *welcome()
             break;
         }
     }
+    cout << "\x1B[2J\x1B[H";
     return currentUser;
 }
 
@@ -376,6 +429,10 @@ void editRemoveTask(User *currentUser)
     int choice = 0;
     while (index <= 0 || index > currentUser->uncompletedTasks.n)
         index = chooseTaskIndex();
+
+    cout << "\x1B[2J\x1B[H";
+    printAppName();
+    displayTask(currentUser->uncompletedTasks.arr[index - 1]);
     cout << "\t\t\t1. Cập nhật\t\t 2. Xóa\n";
     cin >> choice;
     switch (choice)
@@ -389,6 +446,7 @@ void editRemoveTask(User *currentUser)
     default:
         break;
     }
+    cout << "\x1B[2J\x1B[H";
 }
 
 void home(User *currentUser)
@@ -396,14 +454,11 @@ void home(User *currentUser)
     if (currentUser == nullptr)
         currentUser = welcome();
 
+    cout << "\t\t\tĐăng nhập thành công\n";
+
     while (currentUser)
     {
-        // system("cls");
         printAppName();
-        cout << "\t\t\t";
-        // displayDate(activeDate);
-        cout << "\t  " << currentUser->username << endl;
-        cout << "\t\t\tCông việc chưa hoàn thành: \n";
         displayTasks(currentUser->uncompletedTasks);
         cout << "\t\t\tMenu: \n";
         cout << "\t\t\t ___________________________\n";
@@ -435,6 +490,7 @@ void home(User *currentUser)
             task.pDeadline = new Date(d, m, y);
             addTask(currentUser->uncompletedTasks, task);
             quickSortTasks(currentUser->uncompletedTasks, 0, currentUser->uncompletedTasks.n-1);
+            cout << "\x1B[2J\x1B[H";
             break;
         }
         case 2:
@@ -442,29 +498,39 @@ void home(User *currentUser)
             editRemoveTask(currentUser);
             break;
         }
-        // case 3:
-        // {
-        //     int index = 0;
-        //     while (index <= 0 || index > currentUser->uncompletedTasks.n)
-        //         index = chooseTaskIndex();
-        //     Task task = currentUser->uncompletedTasks.arr[index - 1];
-        //     break;
-        // }
+        case 3:
+        {
+            string title;
+            cout << "Tìm kiếm bằng tiêu đề: ";
+            getline(cin, title);
+            Task *pTask = linearSearch(currentUser->uncompletedTasks, title);
+            if (pTask == nullptr)
+                cout << "Không tìm thấy.\n";
+            else
+                displayTask(*pTask);
+            break;
+        }
         case 4:
             displayTasks(currentUser->completedTasks);
             //41 chon cong viec 42 quay lai
             //411 edit 412 xoa
+            char ch;
+            cout << "Nhấn phím bất kỳ để quay lại trang chủ: ";
+            cin >> ch;
+            cout << "\x1B[2J\x1B[H";
             break;
         case 5:
         {
-            // system("cls");
-            printAppName();
+            cout << "\x1B[2J\x1B[H";
             currentUser = welcome();
             break;
         }
         default:
+        {
+            cout << "\x1B[2J\x1B[H";
             cout << invalidChoice;
             break;
+        }
         }
     }
 }
