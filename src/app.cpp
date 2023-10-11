@@ -10,7 +10,7 @@ HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 const int MAX = 500;
 const string notFound = "Không tồn tại. Hãy tạo mới\n";
 const string invalidChoice = "Lỗi. Hãy thử lại\n";
-const string usernameExisted = "\t\t\t Tên đăng nhập này đã tồn tại.";
+const string usernameExisted = "Tên đăng nhập này đã tồn tại. Vui lòng chọn tên khác\n";
 
 struct Date
 {
@@ -241,6 +241,7 @@ void editTask(User *currentUser, int pos)
         case 2:
         {
             cout << "Enter new title: ";
+            cin.ignore();
             getline(cin, title);
             currentUser->uncompletedTasks.arr[pos].title = title;
             break;
@@ -248,6 +249,7 @@ void editTask(User *currentUser, int pos)
         case 3:
         {
             cout << "Enter new description: ";
+            cin.ignore();
             getline(cin, des);
             currentUser->uncompletedTasks.arr[pos].description = des;
             break;
@@ -260,6 +262,7 @@ void editTask(User *currentUser, int pos)
         }
         case 5:
         {
+            cout << "\x1B[2J\x1B[H";
             home(currentUser);
             break;
         }
@@ -302,10 +305,20 @@ Task *linearSearch(User *user, string searchStr)
         transform(title.begin(), title.end(), title.begin(), [](unsigned char c)
                   { return std::tolower(c); });
 
-        if (title.find(searchStr) != string::npos) {
+        if (title.find(searchStr) != string::npos)
             return &(user->uncompletedTasks.arr[i]);
-        }
     }
+
+    for (Node *p = user->completedTasks.pTop; p != nullptr; p = p->next)
+    {
+        title = p->pTask->title;
+        transform(title.begin(), title.end(), title.begin(), [](unsigned char c)
+                  { return std::tolower(c); });
+
+        if (title.find(searchStr) != string::npos)
+            return p->pTask;
+    }
+
     return nullptr;
 }
 
@@ -344,7 +357,7 @@ TreeNode *insertUser(TreeNode *root, User req)
     if (root->user.username == req.username)
     {
         SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
-        cout << usernameExisted << endl;
+        cout << "\t\t\t" << usernameExisted << endl;
         SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
         return root;
     }
@@ -382,14 +395,13 @@ User *login(User *currentUser)
     if (node != nullptr && node->user.password == pw)
     {
         currentUser = &(node->user);
-        SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     }
     else
     {
         SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
         cout << "\t\t\t Sai thông tin đăng nhập! \n";
+        SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
     }
-    SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
     return currentUser;
 }
 
@@ -463,8 +475,6 @@ void home(User *currentUser)
     if (currentUser == nullptr)
         currentUser = welcome();
 
-    cout << "\t\t\tĐăng nhập thành công\n";
-
     while (currentUser)
     {
         printAppName();
@@ -473,7 +483,7 @@ void home(User *currentUser)
         cout << "\t\t\t ___________________________\n";
         cout << "\t\t\t|                           |\n";
         cout << "\t\t\t|   1. Thêm công việc       |\n";
-        cout << "\t\t\t|   2. Chọn công việc       |\n"; // chỉnh sửa or xóa
+        cout << "\t\t\t|   2. Chọn công việc       |\n";
         cout << "\t\t\t|   3. Tìm công việc        |\n";
         cout << "\t\t\t|   4. Xem thành tựu        |\n";
         cout << "\t\t\t|   5. Đăng xuất            |\n";
@@ -523,12 +533,14 @@ void home(User *currentUser)
             break;
         }
         case 4:
+        {
             displayTasks(currentUser->completedTasks);
             //41 chon cong viec 42 quay lai
             //411 edit 412 xoa
             wait();
             cout << "\x1B[2J\x1B[H";
             break;
+        }
         case 5:
         {
             cout << "\x1B[2J\x1B[H";
