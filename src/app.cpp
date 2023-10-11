@@ -293,7 +293,7 @@ void editTask(User *currentUser, int pos)
 //     }
 // }
 
-Task *linearSearch(User *user, string searchStr)
+void linearSearch(User *user, string searchStr)
 {
     Task *foundTask = nullptr;
     transform(searchStr.begin(), searchStr.end(), searchStr.begin(), [](unsigned char c)
@@ -306,7 +306,7 @@ Task *linearSearch(User *user, string searchStr)
                   { return std::tolower(c); });
 
         if (title.find(searchStr) != string::npos)
-            return &(user->uncompletedTasks.arr[i]);
+            displayTask(user->uncompletedTasks.arr[i]);
     }
 
     for (Node *p = user->completedTasks.pTop; p != nullptr; p = p->next)
@@ -316,10 +316,8 @@ Task *linearSearch(User *user, string searchStr)
                   { return std::tolower(c); });
 
         if (title.find(searchStr) != string::npos)
-            return p->pTask;
+            displayTask(*p->pTask);
     }
-
-    return nullptr;
 }
 
 void push(TaskStack &stack, Node *p)
@@ -523,11 +521,7 @@ void home(User *currentUser)
             cout << "Tìm kiếm bằng tiêu đề: ";
             cin.ignore();
             getline(cin, search);
-            Task *pTask = linearSearch(currentUser, search);
-            if (pTask != nullptr)
-                displayTask(*pTask);
-            else
-                cout << "Không tìm thấy.\n";
+            linearSearch(currentUser, search);
             wait();
             cout << "\x1B[2J\x1B[H";
             break;
