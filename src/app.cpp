@@ -3,6 +3,7 @@
 #include <cctype>
 #include <algorithm>
 #include <windows.h>
+#include <conio.h>
 using namespace std;
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -85,6 +86,12 @@ void printAppName()
     SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 }
 
+void wait()
+{
+    cout << "Nhấn phím bất kỳ để tiếp tục... ";
+    _getch();
+}
+
 void displayDate(Date *date)
 {
     if (date)
@@ -121,7 +128,7 @@ void displayTask(Task task)
     cout << "\t\t\t Title: " << task.title << endl;
     cout << "\t\t\t Deadline: " ;
     displayDate(task.pDeadline);
-    cout << "\t\t\t Description: " << task.description << endl;
+    cout << "\n\t\t\t Description: " << task.description << endl;
     cout << "\t\t\t      ------\n";
 }
 
@@ -283,19 +290,21 @@ void editTask(User *currentUser, int pos)
 //     }
 // }
 
-Task *linearSearch(TaskAList li, string t)
+Task *linearSearch(User *user, string searchStr)
 {
-    transform(t.begin(), t.end(), t.begin(), [](unsigned char c)
+    Task *foundTask = nullptr;
+    transform(searchStr.begin(), searchStr.end(), searchStr.begin(), [](unsigned char c)
               { return std::tolower(c); });
-    string title; 
-    for (int i = 0; i < li.n; i++)
+    string title;
+    for (int i = 0; i < user->uncompletedTasks.n; i++)
     {
-        title = li.arr[i].title;
+        title = user->uncompletedTasks.arr[i].title;
         transform(title.begin(), title.end(), title.begin(), [](unsigned char c)
                   { return std::tolower(c); });
 
-        if (li.arr[i].title.find(t) != string::npos)
-            return &(li.arr[i]);
+        if (title.find(searchStr) != string::npos) {
+            return &(user->uncompletedTasks.arr[i]);
+        }
     }
     return nullptr;
 }
@@ -460,7 +469,7 @@ void home(User *currentUser)
     {
         printAppName();
         displayTasks(currentUser->uncompletedTasks);
-        cout << "\t\t\tMenu: \n";
+        cout << "\n\t\t\tMenu: \n";
         cout << "\t\t\t ___________________________\n";
         cout << "\t\t\t|                           |\n";
         cout << "\t\t\t|   1. Thêm công việc       |\n";
@@ -500,23 +509,24 @@ void home(User *currentUser)
         }
         case 3:
         {
-            string title;
+            string search, title;
             cout << "Tìm kiếm bằng tiêu đề: ";
-            getline(cin, title);
-            Task *pTask = linearSearch(currentUser->uncompletedTasks, title);
-            if (pTask == nullptr)
-                cout << "Không tìm thấy.\n";
-            else
+            cin.ignore();
+            getline(cin, search);
+            Task *pTask = linearSearch(currentUser, search);
+            if (pTask != nullptr)
                 displayTask(*pTask);
+            else
+                cout << "Không tìm thấy.\n";
+            wait();
+            cout << "\x1B[2J\x1B[H";
             break;
         }
         case 4:
             displayTasks(currentUser->completedTasks);
             //41 chon cong viec 42 quay lai
             //411 edit 412 xoa
-            char ch;
-            cout << "Nhấn phím bất kỳ để quay lại trang chủ: ";
-            cin >> ch;
+            wait();
             cout << "\x1B[2J\x1B[H";
             break;
         case 5:
@@ -541,7 +551,6 @@ int main()
     users.root = insertUser(users.root, User("user2", "222222"));
     users.root = insertUser(users.root, User("user3", "333333"));
 
-    printAppName();
     User *currentUser = welcome();
 
     home(currentUser);
