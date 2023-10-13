@@ -8,9 +8,16 @@ using namespace std;
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 const int MAX = 500;
-const string notFound = "Không tồn tại. Hãy tạo mới\n";
-const string invalidChoice = "Lỗi. Hãy thử lại\n";
-const string usernameExisted = "Tên đăng nhập này đã tồn tại. Vui lòng chọn tên khác\n";
+class Constants
+{
+public:
+    const string notFound = "Không tồn tại. Hãy tạo mới\n";
+    const string invalidChoice = "Lỗi. Hãy thử lại\n";
+    const string usernameExisted = "Tên đăng nhập này đã tồn tại. Vui lòng chọn tên khác\n";
+    const string usernameLabel = "Tên đăng nhập";
+    const string pwLabel = "Mật khẩu";
+};
+Constants constants = Constants();
 
 struct Date
 {
@@ -42,7 +49,8 @@ struct TaskAList
     TaskAList() : n(0) {}
 };
 
-struct TaskStack {
+struct TaskStack
+{
     Node *pTop;
     TaskStack() : pTop(nullptr) {}
 };
@@ -56,25 +64,25 @@ struct User
     User(string u, string pw) : username(u), password(pw) {}
 };
 
-struct TreeNode
+struct TNode
 {
     User user;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode(User u) : user(u), left(nullptr), right(nullptr) {}
+    TNode *left;
+    TNode *right;
+    TNode(User u) : user(u), left(nullptr), right(nullptr) {}
 };
+typedef TNode *Tree;
+Tree users;
 
-struct UserTree
-{
-    TreeNode *root;
-    UserTree() : root(nullptr) {}
-};
-
-UserTree users;
 void displayTasks(TaskAList);
 void displayStatus(bool completed);
 void push(TaskStack &stack, Node *p);
 void home(User *currentUser);
+
+void initTree(Tree &root)
+{
+    root = nullptr;
+}
 
 void printAppName()
 {
@@ -97,7 +105,7 @@ void displayDate(Date *date)
     if (date)
         cout << date->d << "/" << date->m << "/" << date->y;
     else
-        cout << notFound;
+        cout << constants.notFound;
 }
 
 int chooseTaskIndex()
@@ -126,20 +134,24 @@ bool displayMore(int i)
 void displayTask(Task task)
 {
     cout << "\t\t\t Title: " << task.title << endl;
-    cout << "\t\t\t Deadline: " ;
+    cout << "\t\t\t Deadline: ";
     displayDate(task.pDeadline);
     cout << "\n\t\t\t Description: " << task.description << endl;
+    cout << "\t\t\t ";
+    displayStatus(task.completed);
     cout << "\t\t\t      ------\n";
 }
 
 void displayTasks(TaskAList tasks)
 {
-    if (tasks.n <= 0) return;
+    if (tasks.n <= 0)
+        return;
 
     cout << "\tCông việc chưa hoàn thành: \n";
     for (int i = 0; i < tasks.n; i++)
     {
-        if (!displayMore(i)) return;
+        if (!displayMore(i))
+            return;
         cout << "\t  " << i + 1 << ". ";
         displayDate(tasks.arr[i].pDeadline);
         cout << "  |  " << tasks.arr[i].title << endl;
@@ -156,12 +168,13 @@ bool compareDate(Date *pDate1, Date *pDate2)
         return pDate1->d < pDate2->d;
 }
 
-void quickSortTasks(TaskAList &tasks, int L, int R) {
+void quickSortTasks(TaskAList &tasks, int L, int R)
+{
     if (L <= R)
     {
         int i = L;
         int j = R;
-        int m = (L+R)/2;
+        int m = (L + R) / 2;
         while (i <= j)
         {
             while (compareDate(tasks.arr[i].pDeadline, tasks.arr[m].pDeadline))
@@ -169,7 +182,8 @@ void quickSortTasks(TaskAList &tasks, int L, int R) {
             while (compareDate(tasks.arr[m].pDeadline, tasks.arr[j].pDeadline))
                 j--;
 
-            if (i <= j) {
+            if (i <= j)
+            {
                 Task tmp = tasks.arr[i];
                 tasks.arr[i] = tasks.arr[j];
                 tasks.arr[j] = tmp;
@@ -178,8 +192,10 @@ void quickSortTasks(TaskAList &tasks, int L, int R) {
             }
         }
 
-        if (j > L) quickSortTasks(tasks, L, j);
-        if (i < R) quickSortTasks(tasks, i, R);
+        if (j > L)
+            quickSortTasks(tasks, L, j);
+        if (i < R)
+            quickSortTasks(tasks, i, R);
     }
 }
 
@@ -267,7 +283,7 @@ void editTask(User *currentUser, int pos)
             break;
         }
         default:
-            cout << invalidChoice << endl;
+            cout << constants.invalidChoice << endl;
             break;
         }
     }
@@ -328,7 +344,8 @@ void push(TaskStack &stack, Node *p)
 
 void pop(TaskStack &stack)
 {
-    if (stack.pTop == nullptr) return;
+    if (stack.pTop == nullptr)
+        return;
 
     Node *p = stack.pTop;
     stack.pTop = stack.pTop->next;
@@ -340,43 +357,89 @@ void displayTasks(TaskStack stack)
     int i = 0;
     for (Node *p = stack.pTop; p != nullptr; p = p->next)
     {
-        if (!displayMore(i)) return;
+        if (!displayMore(i))
+            return;
         cout << "Tiêu đề: " << p->pTask->title << endl;
         cout << "Chú thích: " << p->pTask->description << endl;
         i++;
     }
 }
-
-TreeNode *insertUser(TreeNode *root, User req)
+void replaceWithMostLeft(Tree &root, Tree &p)
+{
+    if (p->left != nullptr)
+        replaceWithMostLeft(root, p->left);
+    else
+    {
+        TNode *temp = root;
+        root->user = p->user;
+        p = p->right;
+        delete temp;
+    }
+}
+void deleteUser(Tree &root, User user)
 {
     if (root == nullptr)
-        return new TreeNode(req);
+        return;
+    if (root->user.username > user.username)
+        deleteUser(root->left, user);
+    else if (root->user.username < user.username)
+        deleteUser(root->right, user);
+    else
+    {
+        if (root->left != nullptr && root->right != nullptr)
+            replaceWithMostLeft(root, root->right);
+        else
+        {
+            TNode *temp = root;
+            if (root->left)
+                root = root->left;
+            else if (root->right)
+                root = root->right;
+            delete temp;
+        }
+    }
+}
+
+void insertTNode(Tree &root, User req)
+{
+    if (root == nullptr)
+    {
+        root = new TNode(req);
+        return;
+    }
 
     if (root->user.username == req.username)
     {
         SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
-        cout << "\t\t\t" << usernameExisted << endl;
+        cout << "\t\t\t" << constants.usernameExisted << endl;
         SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-        return root;
+        return;
     }
-    if (root->user.username > req.username)
-        root->left = insertUser(root->left, req);
+    else if (root->user.username > req.username)
+        insertTNode(root->left, req);
     else
-        root->right = insertUser(root->right, req);
-
-    return root;    
+        insertTNode(root->right, req);
 }
 
-TreeNode *searchOnTree(TreeNode *root, string username)
+TNode *searchOnTree(Tree root, string username)
 {
     if (root)
     {
         if (root->user.username == username)
+        {
+            cout << root->user.username << endl;
             return root;
+        }
         if (root->user.username > username)
+        {
+            cout << root->user.username << endl;
             return searchOnTree(root->left, username);
+        }
         else
+        {
+            cout << root->user.username << endl;
             return searchOnTree(root->right, username);
+        }
     }
     return nullptr;
 }
@@ -385,11 +448,11 @@ User *login(User *currentUser)
 {
     string requestUsername;
     string pw;
-    cout << "\t\t\tTên đăng nhập: ";
+    cout << "\t\t\t" << constants.usernameLabel << ": ";
     cin >> requestUsername;
-    cout << "\t\t\tMật khẩu: ";
+    cout << "\t\t\t" << constants.pwLabel << ": ";
     cin >> pw;
-    TreeNode *node = searchOnTree(users.root, requestUsername);
+    TNode *node = searchOnTree(users, requestUsername);
     if (node != nullptr && node->user.password == pw)
     {
         currentUser = &(node->user);
@@ -407,11 +470,11 @@ void signUp()
 {
     string requestUsername;
     string pw;
-    cout << "Tên đăng nhập: ";
+    cout << constants.usernameLabel << ": ";
     cin >> requestUsername;
-    cout << "Mật khẩu: ";
+    cout << constants.pwLabel << ": ";
     cin >> pw;
-    insertUser(users.root, User(requestUsername, pw));
+    insertTNode(users, User(requestUsername, pw));
 }
 
 User *welcome()
@@ -506,7 +569,7 @@ void home(User *currentUser)
             task.completed = false;
             task.pDeadline = new Date(d, m, y);
             addTask(currentUser->uncompletedTasks, task);
-            quickSortTasks(currentUser->uncompletedTasks, 0, currentUser->uncompletedTasks.n-1);
+            quickSortTasks(currentUser->uncompletedTasks, 0, currentUser->uncompletedTasks.n - 1);
             cout << "\x1B[2J\x1B[H";
             break;
         }
@@ -529,8 +592,8 @@ void home(User *currentUser)
         case 4:
         {
             displayTasks(currentUser->completedTasks);
-            //41 chon cong viec 42 quay lai
-            //411 edit 412 xoa
+            // 41 chon cong viec 42 quay lai
+            // 411 edit 412 xoa
             wait();
             cout << "\x1B[2J\x1B[H";
             break;
@@ -544,7 +607,7 @@ void home(User *currentUser)
         default:
         {
             cout << "\x1B[2J\x1B[H";
-            cout << invalidChoice;
+            cout << constants.invalidChoice;
             break;
         }
         }
@@ -553,10 +616,16 @@ void home(User *currentUser)
 
 int main()
 {
-    users.root = insertUser(users.root, User("user1", "111111"));
-    users.root = insertUser(users.root, User("user2", "222222"));
-    users.root = insertUser(users.root, User("user3", "333333"));
+    initTree(users);
+    insertTNode(users, User("user1", "111111"));
+    insertTNode(users, User("user2", "222222"));
+    insertTNode(users, User("user3", "333333"));
+    TNode *user1 = searchOnTree(users, "user1");
 
+    deleteUser(users, user1->user);
+    TNode *user = searchOnTree(users, "user1");
+    cout << (user == nullptr ? "deleted user1" : user->user.username) << endl;
+    wait();
     User *currentUser = welcome();
 
     home(currentUser);
