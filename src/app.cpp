@@ -14,8 +14,10 @@ public:
     const string notFound = "Không tồn tại. Hãy tạo mới\n";
     const string invalidChoice = "Lỗi. Hãy thử lại\n";
     const string usernameExisted = "Tên đăng nhập này đã tồn tại. Vui lòng chọn tên khác\n";
+    const string invalidLogin = "Sai thông tin đăng nhập!\n";
     const string usernameLabel = "Tên đăng nhập";
     const string pwLabel = "Mật khẩu";
+    const string deleteSuccess = "Xóa thành công";
 };
 Constants constants = Constants();
 
@@ -69,9 +71,10 @@ struct TNode
     User user;
     TNode *left;
     TNode *right;
-    TNode(User u) : user(u), left(nullptr), right(nullptr) {}
+    int height;
+    TNode(User u) : user(u), left(nullptr), right(nullptr), height(1) {}
 };
-typedef TNode *Tree;
+typedef TNode* Tree;
 Tree users;
 
 void displayTasks(TaskAList);
@@ -79,10 +82,6 @@ void displayStatus(bool completed);
 void push(TaskStack &stack, Node *p);
 void home(User *currentUser);
 
-void initTree(Tree &root)
-{
-    root = nullptr;
-}
 
 void printAppName()
 {
@@ -98,6 +97,67 @@ void wait()
 {
     cout << "Nhấn phím bất kỳ để tiếp tục... ";
     _getch();
+}
+
+void cleanScreen()
+{
+    cout << "\x1B[2J\x1B[H";
+}
+
+void initTree(Tree &root)
+{
+    root = nullptr;
+}
+
+int maxNum(int a, int b)
+{
+    return (a > b) ? a : b;
+}
+
+int getHeight(TNode *root)
+{
+    if (root == nullptr)
+        return 0;
+    else
+        return root->height;
+}
+
+TNode *rotateRight(TNode *root)
+{
+    TNode *x = root->left;
+    TNode *xR = x->right;
+
+    x->right = root;
+    root->left = xR;
+
+    x->height = maxNum(getHeight(x->left), getHeight(x->right)) + 1;
+    
+    if (xR != nullptr)
+        xR->height = maxNum(getHeight(xR->left), getHeight(xR->right)) + 1;
+
+    return x;
+}
+
+TNode *rotateLeft(TNode *root)
+{
+    TNode *x = root->right;
+    TNode *xL = x->left;
+
+    x->left = root;
+    root->right = xL;
+
+    x->height = maxNum(getHeight(x->left), getHeight(x->right)) + 1;
+    if (xL != nullptr)
+        xL->height = maxNum(getHeight(xL->left), getHeight(xL->right)) + 1;
+
+    return x;
+}
+
+int getBalance(TNode *root)
+{
+    if (root == nullptr)
+        return 0;
+    return getHeight(root->left) - getHeight(root->right);
 }
 
 void displayDate(Date *date)
@@ -278,7 +338,7 @@ void editTask(User *currentUser, int pos)
         }
         case 5:
         {
-            cout << "\x1B[2J\x1B[H";
+            cleanScreen();
             home(currentUser);
             break;
         }
@@ -376,14 +436,14 @@ void replaceWithMostLeft(Tree &root, Tree &p)
         delete temp;
     }
 }
-void deleteUser(Tree &root, User user)
+void deleteTNode(Tree &root, User user)
 {
     if (root == nullptr)
         return;
     if (root->user.username > user.username)
-        deleteUser(root->left, user);
+        deleteTNode(root->left, user);
     else if (root->user.username < user.username)
-        deleteUser(root->right, user);
+        deleteTNode(root->right, user);
     else
     {
         if (root->left != nullptr && root->right != nullptr)
@@ -400,12 +460,11 @@ void deleteUser(Tree &root, User user)
     }
 }
 
-void insertTNode(Tree &root, User req)
+TNode *insertTNode(Tree &root, User req)
 {
     if (root == nullptr)
     {
-        root = new TNode(req);
-        return;
+        return new TNode(req);
     }
 
     if (root->user.username == req.username)
@@ -413,12 +472,32 @@ void insertTNode(Tree &root, User req)
         SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
         cout << "\t\t\t" << constants.usernameExisted << endl;
         SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-        return;
+        return root;
     }
     else if (root->user.username > req.username)
-        insertTNode(root->left, req);
+        root->left = insertTNode(root->left, req);
     else
-        insertTNode(root->right, req);
+        root->right = insertTNode(root->right, req);
+
+    root->height = 1 + maxNum(getHeight(root->left), getHeight(root->right));
+
+    int balance = getBalance(root);
+
+    if (balance > 1 && req.username < root->left->user.username)
+        return rotateRight(root);
+    if (balance < -1 && req.username > root->right->user.username)
+        return rotateLeft(root);
+    if (balance > 1 && req.username > root->left->user.username)
+    {
+        root->left = rotateLeft(root->left);
+        return rotateRight(root);
+    }
+    if (balance < -1 && req.username < root->right->user.username)
+    {
+        root->right = rotateRight(root->right);
+        return rotateLeft(root);
+    }
+    return root;
 }
 
 TNode *searchOnTree(Tree root, string username)
@@ -444,7 +523,7 @@ TNode *searchOnTree(Tree root, string username)
     return nullptr;
 }
 
-User *login(User *currentUser)
+void login(User *&currentUser)
 {
     string requestUsername;
     string pw;
@@ -460,10 +539,9 @@ User *login(User *currentUser)
     else
     {
         SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
-        cout << "\t\t\t Sai thông tin đăng nhập! \n";
+        cout << "\t\t\t" << constants.invalidLogin;
         SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
     }
-    return currentUser;
 }
 
 void signUp()
@@ -474,7 +552,7 @@ void signUp()
     cin >> requestUsername;
     cout << constants.pwLabel << ": ";
     cin >> pw;
-    insertTNode(users, User(requestUsername, pw));
+    users = insertTNode(users, User(requestUsername, pw));
 }
 
 User *welcome()
@@ -490,7 +568,7 @@ User *welcome()
         switch (option)
         {
         case 1:
-            currentUser = login(currentUser);
+            login(currentUser);
             break;
         case 2:
             signUp();
@@ -501,7 +579,7 @@ User *welcome()
             break;
         }
     }
-    cout << "\x1B[2J\x1B[H";
+    cleanScreen();
     return currentUser;
 }
 
@@ -512,7 +590,7 @@ void editRemoveTask(User *currentUser)
     while (index <= 0 || index > currentUser->uncompletedTasks.n)
         index = chooseTaskIndex();
 
-    cout << "\x1B[2J\x1B[H";
+    cleanScreen();
     printAppName();
     displayTask(currentUser->uncompletedTasks.arr[index - 1]);
     cout << "\t\t\t1. Cập nhật\t\t 2. Xóa\n";
@@ -528,7 +606,7 @@ void editRemoveTask(User *currentUser)
     default:
         break;
     }
-    cout << "\x1B[2J\x1B[H";
+    cleanScreen();
 }
 
 void home(User *currentUser)
@@ -548,6 +626,7 @@ void home(User *currentUser)
         cout << "\t\t\t|   3. Tìm công việc        |\n";
         cout << "\t\t\t|   4. Xem thành tựu        |\n";
         cout << "\t\t\t|   5. Đăng xuất            |\n";
+        cout << "\t\t\t|   6. Xóa tài khoản        |\n";
         cout << "\t\t\t|___________________________|\n";
 
         int choice;
@@ -570,7 +649,7 @@ void home(User *currentUser)
             task.pDeadline = new Date(d, m, y);
             addTask(currentUser->uncompletedTasks, task);
             quickSortTasks(currentUser->uncompletedTasks, 0, currentUser->uncompletedTasks.n - 1);
-            cout << "\x1B[2J\x1B[H";
+            cleanScreen();
             break;
         }
         case 2:
@@ -586,7 +665,7 @@ void home(User *currentUser)
             getline(cin, search);
             linearSearch(currentUser, search);
             wait();
-            cout << "\x1B[2J\x1B[H";
+            cleanScreen();
             break;
         }
         case 4:
@@ -595,18 +674,26 @@ void home(User *currentUser)
             // 41 chon cong viec 42 quay lai
             // 411 edit 412 xoa
             wait();
-            cout << "\x1B[2J\x1B[H";
+            cleanScreen();
             break;
         }
         case 5:
         {
-            cout << "\x1B[2J\x1B[H";
+            cleanScreen();
             currentUser = welcome();
             break;
         }
+        case 6:
+        {
+            deleteTNode(users, *currentUser);
+            cout << constants.deleteSuccess << endl;
+            currentUser = nullptr;
+            wait();
+            currentUser = welcome();
+        }
         default:
         {
-            cout << "\x1B[2J\x1B[H";
+            cleanScreen();
             cout << constants.invalidChoice;
             break;
         }
@@ -617,15 +704,10 @@ void home(User *currentUser)
 int main()
 {
     initTree(users);
-    insertTNode(users, User("user1", "111111"));
-    insertTNode(users, User("user2", "222222"));
-    insertTNode(users, User("user3", "333333"));
-    TNode *user1 = searchOnTree(users, "user1");
+    users = insertTNode(users, User("user1", "111111"));
+    users = insertTNode(users, User("user2", "222222"));
+    users = insertTNode(users, User("user3", "333333"));
 
-    deleteUser(users, user1->user);
-    TNode *user = searchOnTree(users, "user1");
-    cout << (user == nullptr ? "deleted user1" : user->user.username) << endl;
-    wait();
     User *currentUser = welcome();
 
     home(currentUser);
