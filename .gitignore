@@ -1,5 +1,6 @@
 Idea.docx
 outline.docx
+*.docx
 .vscode
 *.exe
 gpt

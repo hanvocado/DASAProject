@@ -7,7 +7,8 @@
 using namespace std;
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-const int MAX = 500;
+const int MAX = 100;
+
 class Constants
 {
 public:
