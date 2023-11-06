@@ -1,7 +1,10 @@
+using Dictionary.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IAVLTreeService, AVLTreeService>();
 
 var app = builder.Build();
 
