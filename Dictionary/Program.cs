@@ -4,7 +4,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<IAVLTreeService, AVLTreeService>();
+builder.Services.AddSingleton<IAVLTreeService, AVLTreeService>();
+builder.Services.AddSingleton<IStackService, StackService>();
 
 var app = builder.Build();
 

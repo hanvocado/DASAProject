@@ -1,13 +1,44 @@
-﻿@{
-}
-
-<div class="widget">
-    <div class="search-box">
-        <input type="text" placeholder="algorithms" id="inp-word" />
-        <button type="submit" class="btn btn-primary" id="search-btn">Search</button>
-        <div class="result" id="result">
-
-
+﻿@model Word
+@* use tabs: one for SEARCH, one for HISTORY *@
+<div class="row vertical-center h-100">
+    <div class="col-sm-12 col-md-8 m-auto">
+        <div class="height-400">
+            <div class="card align-middle h-100">
+                <div class="card-body">
+                    <ul class="nav nav-tabs nav-justified mb-3" id="commandTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="search-tab" data-bs-toggle="tab"
+                                data-bs-target="#search" href="#search" role="tab"
+                                aria-controls="search" aria-selected="true">Search</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="history-tab" data-bs-toggle="tab"
+                                data-bs-target="#history" href="#history"
+                                role="tab" aria-controls="history" aria-selected="false">History</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content m-4">
+                        <div class="tab-pane fade show active" id="search" role="tabpanel" aria-labelledby="search-tab" tabindex="0">
+                            <form asp-action="Index">
+                                <div class="row">
+                                    <div class="col-md-10 col-sm-10">
+                                        <input type="text" class="form-control" name="searchStr" placeholder="algorithms" value="@ViewData["searchStr"]"/>
+                                    </div>
+                                    <button type="submit" class="btn btn-block btn-primary col-md-2 col-sm-2 col-xm-6 m-auto" id="search-btn">Search</button>
+                                </div>
+                            </form>
+                            <div class="mt-4">
+                                <h5 class="card-title">@Model?.KeyWord</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">@Model?.PartOfSpeech</h6>
+                                <p class="card-text">@Model?.Meaning</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab" tabindex="0">
+                            <div>history</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
