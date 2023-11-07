@@ -37,3 +37,8 @@ body {
   display: flex;
   align-items: center;
 }
+
+#history {
+  overflow: auto;
+  height: 332px;
+}

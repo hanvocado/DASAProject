@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Dictionary.Models;
 using Dictionary.Services;
+using Dictionary.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 
 namespace Dictionary.Controllers;
 
@@ -9,7 +11,6 @@ public class HomeController : Controller
 {
     public readonly IAVLTreeService _avlTree;
     public readonly IStackService _stack;
-    public Stack SearchHistory = new ();
     public HomeController(IAVLTreeService aVLTree, IStackService stack)
     {
         _avlTree = aVLTree;
@@ -20,11 +21,15 @@ public class HomeController : Controller
     {   
         ViewData["searchStr"] = searchStr;
         Word? result = _avlTree.LookUp(searchStr);
+        
         if (result != null) {
-            _stack.Push(SearchHistory, searchStr!);
+            _stack.Push(searchStr!);
         }
 
-        return View(result);
+        return View(new IndexVM {
+            Word = result,
+            HistoryTop = _stack.GetHistory().Top
+        });
     }
 
     public IActionResult History()
