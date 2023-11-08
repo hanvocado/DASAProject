@@ -30,7 +30,9 @@ public class HomeController : Controller
 
         return View(new IndexVM {
             Word = result,
-            HistoryTop = _stack.GetHistory().Top
+            HistoryTop = _stack.GetHistory().Top,
+            ForwardDisabled = _stack.ForwardDisabled(),
+            BackwardDisabled = _stack.BackwardDisabled(),
         });
     }
 

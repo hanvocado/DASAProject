@@ -23,10 +23,10 @@
                                 <div class="row">
                                     <div class="col-md-10 col-sm-10 col-10">
                                         <div class="input-group">
-                                            <a type="button" class="btn btn-link px-0" asp-action="Backward" asp-route-currentKey="@ViewData["searchStr"]">
+                                            <a type="button" class='btn btn-link px-0 @(Model.BackwardDisabled ? "a-disabled" : "")' asp-action="Backward" asp-route-currentKey="@ViewData["searchStr"]">
                                                 <i class="fas fa-chevron-left fs-4"></i>
                                             </a>
-                                            <a type="button" class="btn btn-link" asp-action="Forward" asp-route-currentKey="@ViewData["searchStr"]">
+                                            <a type="button" class="btn btn-link @(Model.ForwardDisabled ? "a-disabled" : "")" asp-action="Forward" asp-route-currentKey="@ViewData["searchStr"]">
                                                 <i class="fas fa-chevron-right fs-4"></i>
                                             </a>
                                             <input type="text" class="form-control" name="searchStr" placeholder="algorithms" value="@ViewData["searchStr"]"/>

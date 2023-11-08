@@ -8,6 +8,8 @@ public interface IStackService {
     public void Searched(string? key);
     public string? Forwarded(string? currentKey);
     public string? Backwarded(string? currentKey);
+    public bool ForwardDisabled();
+    public bool BackwardDisabled();
 }
 
 public class StackService : IStackService
@@ -71,5 +73,15 @@ public class StackService : IStackService
 
         Console.WriteLine("backward to " + keyToBackwardTo);
         return keyToBackwardTo;
+    }
+
+    public bool ForwardDisabled()
+    {
+        return IsEmpty(Forward);
+    }
+
+    public bool BackwardDisabled()
+    {
+        return IsEmpty(Backward);
     }
 }
