@@ -4,3 +4,7 @@ outline.docx
 .vscode
 *.exe
 gpt
+Banking-Management-System
+obj
+bin
+wwwroot

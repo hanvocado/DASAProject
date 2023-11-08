@@ -33,4 +33,13 @@ public class HomeController : Controller
             HistoryTop = _stack.GetHistory().Top
         });
     }
+
+    public IActionResult BackWard(string? currentKey)
+    {
+        return RedirectToAction(nameof(Index), new { searchStr = _stack.Backwarded(currentKey) });
+    }
+    public IActionResult ForWard(string? currentKey)
+    {
+        return RedirectToAction(nameof(Index), new { searchStr = _stack.Forwarded(currentKey) });
+    }
 }

@@ -22,7 +22,15 @@
                             <form asp-action="Index">
                                 <div class="row">
                                     <div class="col-md-10 col-sm-10 col-10">
-                                        <input type="text" class="form-control" name="searchStr" placeholder="algorithms" value="@ViewData["searchStr"]"/>
+                                        <div class="input-group">
+                                            <a type="button" class="btn btn-link px-0" asp-action="Backward" asp-route-currentKey="@ViewData["searchStr"]">
+                                                <i class="fas fa-chevron-left fs-4"></i>
+                                            </a>
+                                            <a type="button" class="btn btn-link" asp-action="Forward" asp-route-currentKey="@ViewData["searchStr"]">
+                                                <i class="fas fa-chevron-right fs-4"></i>
+                                            </a>
+                                            <input type="text" class="form-control" name="searchStr" placeholder="algorithms" value="@ViewData["searchStr"]"/>
+                                        </div>
                                     </div>
                                     <button type="submit" class="btn btn-block btn-primary col-md-2 col-sm-2 col-2 m-auto">
                                         <i class="fas fa-search"></i>

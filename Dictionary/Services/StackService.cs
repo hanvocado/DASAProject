@@ -6,8 +6,8 @@ public interface IStackService {
     public void Push(string key);
     public Stack GetHistory();
     public void Searched(string? key);
-    public string? Forwarded(string currentKey);
-    public string? Backwarded(string currentKey);
+    public string? Forwarded(string? currentKey);
+    public string? Backwarded(string? currentKey);
 }
 
 public class StackService : IStackService
@@ -26,7 +26,7 @@ public class StackService : IStackService
         p.Next = History.Top;
         History.Top = p;
     }
-    private void push(Stack stack, string key) {
+    private void push(Stack stack, string? key) {
         Node p = new(key);
         p.Next = stack.Top;
         stack.Top = p;
@@ -47,25 +47,29 @@ public class StackService : IStackService
     }
 
     public void Searched(string? key) {
-        if (!String.IsNullOrEmpty(key)) {
+        if (!String.Equals(top(Backward), key, StringComparison.OrdinalIgnoreCase)) {
             push(Backward, key);
         }
     }
 
-    public string? Forwarded(string currentKey) {
+    public string? Forwarded(string? currentKey) {
         if (!IsEmpty(Forward)) {
             push(Backward, currentKey);
         }
         string? keyToForwardTo = top(Forward);
         pop(Forward);
+        Console.WriteLine("forward to " + keyToForwardTo);
         return keyToForwardTo;
     }
-    public string? Backwarded(string currentKey) {
+    public string? Backwarded(string? currentKey) {
         if (!IsEmpty(Backward)) {
             push(Forward, currentKey);
         }
+        pop(Backward);
         string? keyToBackwardTo = top(Backward);
         pop(Backward);
+
+        Console.WriteLine("backward to " + keyToBackwardTo);
         return keyToBackwardTo;
     }
 }
