@@ -20,8 +20,10 @@ public class HomeController : Controller
     public IActionResult Index(string? searchStr)
     {   
         ViewData["searchStr"] = searchStr;
-        Word? result = _avlTree.LookUp(searchStr);
+
+        _stack.Searched(searchStr);
         
+        Word? result = _avlTree.LookUp(searchStr);
         if (result != null) {
             _stack.Push(searchStr!);
         }
@@ -30,10 +32,5 @@ public class HomeController : Controller
             Word = result,
             HistoryTop = _stack.GetHistory().Top
         });
-    }
-
-    public IActionResult History()
-    {
-        return View();   
     }
 }
