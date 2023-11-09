@@ -16,3 +16,15 @@ public class Stack {
         Top = null;
     }
 }
+
+public class LinkedList
+{
+    public Node? Head { get; set; }
+    public Node? Tail { get; set; }
+
+    public LinkedList()
+    {
+        Head = null;
+        Tail = null;
+    }
+}

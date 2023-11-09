@@ -63,19 +63,29 @@ public class AVLTreeService : IAVLTreeService {
 
     public TNode GetSample() {
         var words = new List<Word> {
-            new() { KeyWord = "Abundant", PartOfSpeech = "adj", Meaning = "Available in large quantities; plentiful"},
-            new() { KeyWord = "Compose", PartOfSpeech = "v", Meaning = "Write or create; constitute or make up"},
-            new() { KeyWord = "Distinguish", PartOfSpeech = "v", Meaning = "Perceive or point out a difference"},
-            new() { KeyWord = "Gauge", PartOfSpeech = "v", Meaning = "Estimate or determine the magnitude, amount, or volume of"},
-            new() { KeyWord = "Intrepid", PartOfSpeech = "adj", Meaning = "Fearless; adventurous"},
-            new() { KeyWord = "Orient", PartOfSpeech = "v", Meaning = "Align or position (something) relative to the points of a compass or other specified positions"},
-            new() { KeyWord = "Residual", PartOfSpeech = "adj", Meaning = "Remaining after the greater part or quantity has gone"},
-            new() { KeyWord = "Vindicate", PartOfSpeech = "v", Meaning = "Clear of blame or suspicion"},
-            new() { KeyWord = "Aloof", PartOfSpeech = "adj", Meaning = "Not friendly or forthcoming; cool and distant"},
-            new() { KeyWord = "Consecutive", PartOfSpeech = "adj", Meaning = "Following continuously, an unbroken or logical sequence"},
-            new() { KeyWord = "Emerge", PartOfSpeech = "v", Meaning = "Move out of or away from something and come into view"},
-            new() { KeyWord = "Hackneyed", PartOfSpeech = "adj", Meaning = "Lacking significance through having been overused"},
-            new() { KeyWord = "Jubilation", PartOfSpeech = "n", Meaning = "A feeling of great happiness and triumph"}
+            new() { KeyWord = "abundant", PartOfSpeech = "adjective", Meaning = "Available in large quantities; plentiful"},
+            new() { KeyWord = "compose", PartOfSpeech = "verb", Meaning = "Write or create; constitute or make up"},
+            new() { KeyWord = "distinguish", PartOfSpeech = "verb", Meaning = "Perceive or point out a difference"},
+            new() { KeyWord = "gauge", PartOfSpeech = "verb", Meaning = "Estimate or determine the magnitude, amount, or volume of"},
+            new() { KeyWord = "intrepid", PartOfSpeech = "adjective", Meaning = "Fearless; adventurous"},
+            new() { KeyWord = "orient", PartOfSpeech = "verb", Meaning = "Align or position (something) relative to the points of a compass or other specified positions"},
+            new() { KeyWord = "residual", PartOfSpeech = "adjective", Meaning = "Remaining after the greater part or quantity has gone"},
+            new() { KeyWord = "vindicate", PartOfSpeech = "verb", Meaning = "Clear of blame or suspicion"},
+            new() { KeyWord = "aloof", PartOfSpeech = "adjective", Meaning = "Not friendly or forthcoming; cool and distant"},
+            new() { KeyWord = "consecutive", PartOfSpeech = "adjective", Meaning = "Following continuously, an unbroken or logical sequence"},
+            new() { KeyWord = "emerge", PartOfSpeech = "verb", Meaning = "Move out of or away from something and come into view"},
+            new() { KeyWord = "hackneyed", PartOfSpeech = "adjective", Meaning = "Lacking significance through having been overused"},
+            new() { KeyWord = "jubilation", PartOfSpeech = "noun", Meaning = "A feeling of great happiness and triumph"},
+            new() { KeyWord = "benevolent", PartOfSpeech = "adjective", Meaning = "Kind and generous; showing goodwill to others"},
+            new() { KeyWord = "candid", PartOfSpeech = "adjective", Meaning = "Honest and straightforward; expressing opinions or feelings without hesitation"},
+            new() { KeyWord = "diligent", PartOfSpeech = "adjective", Meaning = "Hard-working and careful; showing perseverance and attention to detail"},
+            new() { KeyWord = "elegant", PartOfSpeech = "adjective", Meaning = "Graceful and stylish; having refined taste and manners"},
+            new() { KeyWord = "fervent", PartOfSpeech = "adjective", Meaning = "Passionate and intense; having or showing strong feelings or beliefs"},
+            new() { KeyWord = "glimpse", PartOfSpeech = "noun", Meaning = "A brief or partial view; a quick look"},
+            new() { KeyWord = "hinder", PartOfSpeech = "verb", Meaning = "To obstruct or delay; to prevent from doing or achieving something"},
+            new() { KeyWord = "inspire", PartOfSpeech = "verb", Meaning = "To fill with enthusiasm or creativity; to influence or motivate positively"},
+            new() { KeyWord = "jubilant", PartOfSpeech = "adjective", Meaning = "Feeling or expressing great joy; celebrating a success or victory"},
+            new() { KeyWord = "knack", PartOfSpeech = "noun", Meaning = "A special skill or talent; an ability to do something easily or well"}
         };
 
         TNode? root = null;

@@ -48,3 +48,7 @@ body {
   pointer-events: none;
   text-decoration: none;
 }
+
+#savedWords a:hover {
+  color: blueviolet!important;
+}

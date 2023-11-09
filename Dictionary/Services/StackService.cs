@@ -3,7 +3,6 @@ using Dictionary.Models;
 namespace Dictionary.Services;
 
 public interface IStackService {
-    public void Push(string key);
     public Stack GetHistory();
     public void Searched(string? key);
     public string? Forwarded(string? currentKey);
@@ -21,12 +20,6 @@ public class StackService : IStackService
     public bool IsEmpty(Stack stack)
     {
         return stack.Top == null;
-    }
-    public void Push(string key)
-    {
-        Node p = new(key);            
-        p.Next = History.Top;
-        History.Top = p;
     }
     private void push(Stack stack, string? key) {
         Node p = new(key);
@@ -60,7 +53,7 @@ public class StackService : IStackService
         }
         string? keyToForwardTo = top(Forward);
         pop(Forward);
-        Console.WriteLine("forward to " + keyToForwardTo);
+
         return keyToForwardTo;
     }
     public string? Backwarded(string? currentKey) {
@@ -71,7 +64,6 @@ public class StackService : IStackService
         string? keyToBackwardTo = top(Backward);
         pop(Backward);
 
-        Console.WriteLine("backward to " + keyToBackwardTo);
         return keyToBackwardTo;
     }
 

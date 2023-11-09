@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IAVLTreeService, AVLTreeService>();
 builder.Services.AddSingleton<IStackService, StackService>();
+builder.Services.AddSingleton<IUserService, UserService>();
 
 var app = builder.Build();
 

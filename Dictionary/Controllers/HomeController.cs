@@ -11,10 +11,12 @@ public class HomeController : Controller
 {
     public readonly IAVLTreeService _avlTree;
     public readonly IStackService _stack;
-    public HomeController(IAVLTreeService aVLTree, IStackService stack)
+    public readonly IUserService _user;
+    public HomeController(IAVLTreeService aVLTree, IStackService stack, IUserService user)
     {
         _avlTree = aVLTree;
         _stack = stack;
+        _user = user;
     }
 
     public IActionResult Index(string? searchStr)
@@ -24,24 +26,27 @@ public class HomeController : Controller
         _stack.Searched(searchStr);
         
         Word? result = _avlTree.LookUp(searchStr);
-        if (result != null) {
-            _stack.Push(searchStr!);
-        }
 
         return View(new IndexVM {
             Word = result,
-            HistoryTop = _stack.GetHistory().Top,
+            WordIsSaved = result == null ? false : _user.IsSaved(result.KeyWord),
+            SavedWords = _user.GetSavedWords(),
             ForwardDisabled = _stack.ForwardDisabled(),
-            BackwardDisabled = _stack.BackwardDisabled(),
+            BackwardDisabled = _stack.BackwardDisabled()
         });
     }
 
-    public IActionResult BackWard(string? currentKey)
+    public IActionResult Backward(string? currentKey)
     {
         return RedirectToAction(nameof(Index), new { searchStr = _stack.Backwarded(currentKey) });
     }
-    public IActionResult ForWard(string? currentKey)
+    public IActionResult Forward(string? currentKey)
     {
         return RedirectToAction(nameof(Index), new { searchStr = _stack.Forwarded(currentKey) });
+    }
+    public IActionResult Save(string key)
+    {
+        _user.SaveWord(key);
+        return RedirectToAction(nameof(Index), new { searchStr = key });
     }
 }

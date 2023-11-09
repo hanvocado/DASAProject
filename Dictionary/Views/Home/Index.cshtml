@@ -12,9 +12,9 @@
                                 aria-controls="search" aria-selected="true">Search</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="history-tab" data-bs-toggle="tab"
-                                data-bs-target="#history" href="#history"
-                                role="tab" aria-controls="history" aria-selected="false">History</a>
+                            <a class="nav-link" id="savedWords-tab" data-bs-toggle="tab"
+                                data-bs-target="#savedWords" href="#savedWords"
+                                role="tab" aria-controls="savedWords" aria-selected="false">Saved Words</a>
                         </li>
                     </ul>
                     <div class="tab-content m-4">
@@ -37,10 +37,13 @@
                                     </button>
                                 </div>
                             </form>
-                            @if (Model?.Word != null) {
+                            @if (Model?.Word == null && ViewData["searchStr"] != null) {
+                                <div class="mx-5 my-3 fw-bold">NOT FOUND</div>
+                            } else if (Model?.Word != null) {
                                 <div class="mt-4">
                                     <div class="input-group">
                                         <h5 class="card-title pt-1">@Model?.Word?.KeyWord</h5>
+                                        <a asp-action="Save" asp-route-key="@Model.Word.KeyWord" class="btn btn-link"><i class='@(Model.WordIsSaved ? "fas" : "far") fa-bookmark'></i></a>
                                         @* <a class="btn btn-link d-inline"><i class="fas fa-volume-up"></i></a> *@
                                     </div>
                                     <h6 class="card-subtitle my-2 text-muted">@Model?.Word?.PartOfSpeech</h6>
@@ -48,14 +51,12 @@
                                 </div>
                             }
                         </div>
-                        <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab" tabindex="0">
+                        <div class="tab-pane fade" id="savedWords" role="tabpanel" aria-labelledby="savedWords-tab" tabindex="0">
                             @{
-                                if (Model?.HistoryTop != null) {
-                                    for (Node? p = Model.HistoryTop; p != null; p = p.Next) {
-                                        <div>
-                                            <a class="btn btn-link text-decoration-none text-secondary" asp-action="Index" asp-route-searchStr="@p.Key">@p.Key</a>
-                                        </div>
-                                    }
+                                foreach (string word in Model.SavedWords) {
+                                    <div>
+                                        <a class="btn btn-link text-decoration-none text-dark" asp-action="Index" asp-route-searchStr="@word">@word</a>
+                                    </div>
                                 }
                             }
                         </div>

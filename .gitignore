@@ -5,6 +5,6 @@ outline.docx
 *.exe
 gpt
 Banking-Management-System
-obj
-bin
+obj/
+bin/
 wwwroot
