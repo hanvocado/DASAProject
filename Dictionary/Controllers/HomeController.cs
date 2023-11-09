@@ -9,12 +9,12 @@ namespace Dictionary.Controllers;
 
 public class HomeController : Controller
 {
-    public readonly IAVLTreeService _avlTree;
+    public readonly IDictionaryService _dictionary;
     public readonly IStackService _stack;
     public readonly IUserService _user;
-    public HomeController(IAVLTreeService aVLTree, IStackService stack, IUserService user)
+    public HomeController(IDictionaryService dictionary, IStackService stack, IUserService user)
     {
-        _avlTree = aVLTree;
+        _dictionary = dictionary;
         _stack = stack;
         _user = user;
     }
@@ -25,7 +25,7 @@ public class HomeController : Controller
 
         _stack.Searched(searchStr);
         
-        Word? result = _avlTree.LookUp(searchStr);
+        Word? result = _dictionary.LookUp(searchStr);
 
         return View(new IndexVM {
             Word = result,
