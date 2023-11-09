@@ -31,9 +31,9 @@ public class AVLTreeService : IAVLTreeService {
         if (node == null)
             return new TNode(word);
 
-        if (compareString(word.KeyWord, node.Word.KeyWord) < 0) 
+        if (compareString(word.KeyWord, node.Word.KeyWord!) < 0) 
             node.Left = Insert(node.Left, word);
-        else if (compareString(word.KeyWord, node.Word.KeyWord) > 0)
+        else if (compareString(word.KeyWord, node.Word.KeyWord!) > 0)
             node.Right = Insert(node.Right, word);
         else
             return node;

@@ -44,9 +44,9 @@ public class HomeController : Controller
     {
         return RedirectToAction(nameof(Index), new { searchStr = _stack.Forwarded(currentKey) });
     }
-    public IActionResult Save(string key)
+    public IActionResult SaveOrUnsave(string key)
     {
-        _user.SaveWord(key);
+        _user.SaveOrUnsaveWord(key);
         return RedirectToAction(nameof(Index), new { searchStr = key });
     }
 }

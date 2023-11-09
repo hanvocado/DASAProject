@@ -3,7 +3,6 @@ using Dictionary.Models;
 namespace Dictionary.Services;
 
 public interface IStackService {
-    public Stack GetHistory();
     public void Searched(string? key);
     public string? Forwarded(string? currentKey);
     public string? Backwarded(string? currentKey);
@@ -13,7 +12,6 @@ public interface IStackService {
 
 public class StackService : IStackService
 {
-    private Stack History = new ();
     private Stack Forward = new Stack();
     private Stack Backward = new Stack();
 
@@ -35,10 +33,6 @@ public class StackService : IStackService
         if (IsEmpty(stack))
             return null;
         return stack.Top!.Key;
-    }
-
-    public Stack GetHistory() {
-        return History;
     }
 
     public void Searched(string? key) {
