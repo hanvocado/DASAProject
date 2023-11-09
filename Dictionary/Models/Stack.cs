@@ -10,10 +10,34 @@ public class Node {
 }
 
 public class Stack {
-    public Node? Top { get; set; }
+    private Node? top { get; set; }
 
     public Stack() {
-        Top = null;
+        top = null;
+    }
+
+    public bool IsEmpty()
+    {
+        return top == null;
+    }
+
+    public void Pop()
+    {
+        if (IsEmpty())
+            return;
+        top = top!.Next;
+    }
+    public string? Top()
+    {
+        if (IsEmpty())
+            return null;
+        return top!.Key;
+    }
+    public void Push(string? key)
+    {
+        Node p = new(key);
+        p.Next = top;
+        top = p;
     }
 }
 
@@ -26,5 +50,31 @@ public class LinkedList
     {
         Head = null;
         Tail = null;
+    }
+
+    public void AddLast(string key)
+    {
+        Node node = new Node(key);
+        if (Head == null)
+        {
+            Head = node;
+            Tail = node;
+        }
+        else
+        {
+            Tail!.Next = node;
+            Tail = node;
+        }
+    }
+    public Node? Find(string key)
+    {
+        for (Node? p = Head; p != null; p = p.Next)
+        {
+            if (String.Equals(key, p.Key, StringComparison.OrdinalIgnoreCase))
+            {
+                return p;
+            }
+        }
+        return null;
     }
 }

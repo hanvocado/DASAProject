@@ -15,59 +15,39 @@ public class StackService : IStackService
     private Stack Forward = new Stack();
     private Stack Backward = new Stack();
 
-    public bool IsEmpty(Stack stack)
-    {
-        return stack.Top == null;
-    }
-    private void push(Stack stack, string? key) {
-        Node p = new(key);
-        p.Next = stack.Top;
-        stack.Top = p;
-    }
-    private void pop(Stack stack) {
-        if (IsEmpty(stack))
-            return;
-        stack.Top = stack.Top!.Next;
-    }
-    private string? top(Stack stack) {
-        if (IsEmpty(stack))
-            return null;
-        return stack.Top!.Key;
-    }
-
     public void Searched(string? key) {
-        if (!String.Equals(top(Backward), key, StringComparison.OrdinalIgnoreCase)) {
-            push(Backward, key);
+        if (!String.Equals(Backward.Top(), key, StringComparison.OrdinalIgnoreCase)) {
+            Backward.Push(key);
         }
     }
 
     public string? Forwarded(string? currentKey) {
-        if (!IsEmpty(Forward)) {
-            push(Backward, currentKey);
+        if (!Forward.IsEmpty()) {
+            Backward.Push(currentKey);
         }
-        string? keyToForwardTo = top(Forward);
-        pop(Forward);
+        string? keyToForwardTo = Forward.Top();
+        Forward.Pop();
 
         return keyToForwardTo;
     }
     public string? Backwarded(string? currentKey) {
-        if (!IsEmpty(Backward)) {
-            push(Forward, currentKey);
+        if (!Backward.IsEmpty()) {
+            Forward.Push(currentKey);
         }
-        pop(Backward);
-        string? keyToBackwardTo = top(Backward);
-        pop(Backward);
+        Backward.Pop();
+        string? keyToBackwardTo = Backward.Top();
+        Backward.Pop();
 
         return keyToBackwardTo;
     }
 
     public bool ForwardDisabled()
     {
-        return IsEmpty(Forward);
+        return Forward.IsEmpty();
     }
 
     public bool BackwardDisabled()
     {
-        return IsEmpty(Backward);
+        return Backward.IsEmpty();
     }
 }

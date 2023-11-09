@@ -17,9 +17,9 @@ public class UserService : IUserService {
     }
 
     public void SaveOrUnsaveWord(string key) {
-        Node? p = find(SavedWords, key);
+        Node? p = SavedWords.Find(key);
         if (p == null)
-            addLast(SavedWords, key);
+            SavedWords.AddLast(key);
         else {
             if (SavedWords.Head == null) return;
             if (SavedWords.Head == p) {
@@ -45,26 +45,8 @@ public class UserService : IUserService {
     }
 
     public bool IsSaved(string key) {
-        return find(SavedWords, key) != null;
+        return SavedWords.Find(key) != null;
     }
 
-    private void addLast(LinkedList li, string key) {
-        Node node = new Node(key);
-        if (li.Head == null) {
-            li.Head = node;
-            li.Tail = node;
-        } else {
-            li.Tail!.Next = node;
-            li.Tail = node;
-        }
-    }
-
-    private Node? find(LinkedList li, string key) {
-        for (Node? p = li.Head; p != null; p = p.Next) {
-            if (String.Equals(key, p.Key, StringComparison.OrdinalIgnoreCase)) {
-                return p;
-            }
-        }
-        return null;
-    }
+    
 }
