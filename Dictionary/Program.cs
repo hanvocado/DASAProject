@@ -4,7 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<IAVLTreeService, AVLTreeService>();
+builder.Services.AddSingleton<IDictionaryService, DictionaryService>();
 builder.Services.AddSingleton<IStackService, StackService>();
 builder.Services.AddSingleton<IUserService, UserService>();
 
