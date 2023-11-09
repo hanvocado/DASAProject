@@ -30,10 +30,13 @@ public class HomeController : Controller
         return View(new IndexVM {
             Word = result,
             WordIsSaved = result == null ? false : _user.IsSaved(result.KeyWord),
-            SavedWords = _user.GetSavedWords(),
             ForwardDisabled = _stack.ForwardDisabled(),
             BackwardDisabled = _stack.BackwardDisabled()
         });
+    }
+    public IActionResult SavedWords()
+    {
+        return View(_user.GetSavedWords());
     }
 
     public IActionResult Backward(string? currentKey)

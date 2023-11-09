@@ -10,10 +10,8 @@
                                 data-bs-target="#search" href="#search" role="tab"
                                 aria-controls="search" aria-selected="true">Search</a>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="savedWords-tab" data-bs-toggle="tab"
-                                data-bs-target="#savedWords" href="#savedWords"
-                                role="tab" aria-controls="savedWords" aria-selected="false">Saved Words</a>
+                        <li class="nav-item">
+                            <a asp-action="SavedWords" class="nav-link">Saved Words</a>
                         </li>
                     </ul>
                     <div class="tab-content m-4">
@@ -48,16 +46,6 @@
                                     <h6 class="card-subtitle my-2 text-muted">@Model?.Word?.PartOfSpeech</h6>
                                     <p class="card-text">@Model?.Word?.Meaning</p>
                                 </div>
-                            }
-                        </div>
-                        <div class="tab-pane fade" id="savedWords" role="tabpanel" aria-labelledby="savedWords-tab" tabindex="0">
-                            @{
-                                for (Node? n = Model?.SavedWords.Head; n != null; n = n.Next) {
-                                    <div class="row">
-                                        <a class="btn btn-link text-decoration-none text-dark fs-5 col-10 text-start" asp-action="Index" asp-route-searchStr="@n.Key">@n.Key</a>
-                                        <a class="btn btn-link col-2" asp-action="SaveOrUnsave" asp-route-key="@n.Key"><small><i class="fas fa-trash text-danger"></i></small></a>
-                                    </div>
-                                }
                             }
                         </div>
                     </div>
