@@ -78,7 +78,9 @@ public class LinkedList
         return null;
     }
 
-    public void Remove(Node? nodeToRemove) {
+    public void Remove(string key) {
+        Node? nodeToRemove = Find(key);
+        if (nodeToRemove == null) return;
         if (Head == null) return;
         if (Head == nodeToRemove)
         {

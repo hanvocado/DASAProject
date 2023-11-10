@@ -29,14 +29,10 @@ public class HomeController : Controller
 
         return View(new IndexVM {
             Word = result,
-            WordIsSaved = result == null ? false : _user.IsSaved(result.KeyWord),
+            WordIsSaved = _user.IsSaved(result),
             ForwardDisabled = _stack.ForwardDisabled(),
             BackwardDisabled = _stack.BackwardDisabled()
         });
-    }
-    public IActionResult SavedWords()
-    {
-        return View(_user.GetSavedWords());
     }
 
     public IActionResult Backward(string? currentKey)
@@ -47,9 +43,23 @@ public class HomeController : Controller
     {
         return RedirectToAction(nameof(Index), new { searchStr = _stack.Forwarded(currentKey) });
     }
-    public IActionResult SaveOrUnsave(string key)
+    public IActionResult RemoveWord(string key, string tag)
     {
-        _user.SaveOrUnsaveWord(key);
+        _user.RemoveWord(key, tag);
+        return RedirectToAction(nameof(Index), new { searchStr = key });
+    }
+    public IActionResult ViewSavedWords(string? category)
+    {
+        if (!String.IsNullOrEmpty(category))
+            return View(_user.GetWords(category));
+
+        return View(new LinkedList());
+    }
+    public IActionResult SaveWord(string key, string? category)
+    {
+        if (String.IsNullOrEmpty(category))
+            category = "Default";
+        _user.SaveWord(key, category);
         return RedirectToAction(nameof(Index), new { searchStr = key });
     }
 }

@@ -64,8 +64,4 @@ public class HashTable {
         }
         return null;
     }
-    private int compareString(string str1, string str2)
-    {
-        return String.Compare(str1, str2, comparisonType: StringComparison.OrdinalIgnoreCase);
-    }
 }

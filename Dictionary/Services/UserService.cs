@@ -3,62 +3,52 @@ using Dictionary.Models;
 namespace Dictionary.Services;
 
 public interface IUserService {
-    public LinkedList GetSavedWords();
-    public List<Folder> GetFolders();
-    public void SaveOrUnsaveWord(string key, string folderName);
-    public bool IsSaved(string key);
+    public void SaveWord(string key, string category);
+    public void RemoveWord(string key, string category);
+    public LinkedList? GetWords(string category);
+    public bool IsSaved(Word? word);
 
 }
 public class UserService : IUserService {
-    private LinkedList SavedWords = new LinkedList();
-    private List<Folder> Folders = new();
+    private List<Category> Categories = new();
     private IWebHostEnvironment _env;
 
     public UserService(IWebHostEnvironment env) {
         _env = env;
-        ReadSavedWords();
+        //ReadSavedWords();
     }
-    private void ReadSavedWords() {
-        string filePath = Path.Combine(_env.WebRootPath, "SavedWords.txt");
-        using (var reader = new StreamReader(filePath))
-        {
-            string? line;
-            while ((line = reader.ReadLine()) != null) {
-                SavedWords.AddLast(line);
-            }
-        }
-    }
-    public LinkedList GetSavedWords() {
-        return SavedWords;
-    }
-    public List<Folder> GetFolders() {
-        return Folders;
-    }
-    public void AddFolder(string name) {
-        Folders.Add(new Folder(name));
-    }
-    public void DeleteFolder(string name) {
-        Folder? folder = FindFolder(name);
-        if (folder == null)
-            return;
-        Folders.Remove(folder);
-    }
-    public Folder? FindFolder(string name) {
-        return Folders.Find(f => f.FolderName() == name);
-    }
-    public void SaveOrUnsaveWord(string key, string FolderName) {
-        Node? p = SavedWords.Find(key);
-        if (p == null) {
-            SavedWords.AddLast(key);
-        }
-        else {
-            SavedWords.Remove(p);
-        }
-    }
-
-    public bool IsSaved(string key) {
-        return SavedWords.Find(key) != null;
-    }
-
+    // private void ReadSavedWords() {
+    //     string filePath = Path.Combine(_env.WebRootPath, "SavedWords.txt");
+    //     using (var reader = new StreamReader(filePath))
+    //     {
+    //         string? line;
+    //         while ((line = reader.ReadLine()) != null) {
+    //             SavedWords.AddLast(line);
+    //         }
+    //     }
+    // }
     
+    public void SaveWord(string key, string category)
+    {
+        Category? tag = Categories.Find(t => t.Name == category);
+        if (tag == null)
+        {
+            tag = new Category(category);
+            Categories.Add(tag);
+        }
+        tag.AddWord(key);
+    }
+    public void RemoveWord(string key, string category)
+    {
+        Categories.Find(t => t.Name == category)?.RemoveWord(key);
+    }
+
+    public bool IsSaved(Word? word) {
+        if (word == null) return false;
+        return word.Categories == null ? false : word.Categories.Count() > 0;
+    }
+
+    public LinkedList? GetWords(string category) {
+        return Categories.Find(c => c.Name == category)?.Words;
+    }
 }

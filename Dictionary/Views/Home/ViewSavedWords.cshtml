@@ -1,0 +1,12 @@
+@model LinkedList
+
+<div>
+    @{
+        for (Node? n = Model?.Head; n != null; n = n.Next) {
+            <div class="row">
+                <a class="btn btn-link text-decoration-none text-dark fs-5 col-10 text-start" asp-action="Index" asp-route-searchStr="@n.Key">@n.Key</a>
+                <a class="btn btn-link col-2" asp-action="SaveOrUnsave" asp-route-key="@n.Key"><small><i class="fas fa-trash text-danger"></i></small></a>
+            </div>
+        }
+    }
+</div>
