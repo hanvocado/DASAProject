@@ -77,4 +77,33 @@ public class LinkedList
         }
         return null;
     }
+
+    public void Remove(Node? nodeToRemove) {
+        if (Head == null) return;
+        if (Head == nodeToRemove)
+        {
+            if (Tail == nodeToRemove)
+            {
+                Head = Tail = null;
+            }
+            else
+            {
+                Head = Head.Next;
+            }
+        }
+        else
+        {
+            Node? q = Head;
+            while (q != null && q.Next != nodeToRemove)
+            {
+                q = q.Next;
+            }
+            if (q == null) return;
+
+            q.Next = nodeToRemove.Next;
+            if (Tail == nodeToRemove)
+                Tail = q;
+        }
+        nodeToRemove = null;
+    }
 }
