@@ -7,7 +7,6 @@ gpt
 Banking-Management-System
 obj/
 bin/
-wwwroot
 
 # use hash table to store words
 # use tree for auto complete
