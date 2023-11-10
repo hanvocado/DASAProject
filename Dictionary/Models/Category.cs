@@ -3,7 +3,7 @@ namespace Dictionary.Models;
 public class Category {
     public string Name { get; set; }
     public LinkedList Words { get; set; } = new();
-    // public string UserId { get; set; }
+    public string? UserId { get; set; }
 
     public Category(string name) {
         Name = name;

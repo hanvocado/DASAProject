@@ -38,7 +38,7 @@ body {
   align-items: center;
 }
 
-#history {
+#saved-words-section {
   overflow: auto;
   height: 332px;
 }
@@ -49,7 +49,7 @@ body {
   text-decoration: none;
 }
 
-#savedWords a:hover {
+#saved-words-section a:hover {
   color: blueviolet!important;
 }
 

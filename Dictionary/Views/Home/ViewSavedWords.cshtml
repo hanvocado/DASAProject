@@ -1,12 +1,58 @@
-@model LinkedList
-
-<div>
-    @{
-        for (Node? n = Model?.Head; n != null; n = n.Next) {
-            <div class="row">
-                <a class="btn btn-link text-decoration-none text-dark fs-5 col-10 text-start" asp-action="Index" asp-route-searchStr="@n.Key">@n.Key</a>
-                <a class="btn btn-link col-2" asp-action="SaveOrUnsave" asp-route-key="@n.Key"><small><i class="fas fa-trash text-danger"></i></small></a>
+@model SavedWordsVM
+<div class="row vertical-center h-100">
+    <div class="col-sm-12 col-md-8 m-auto">
+        <div class="height-400">
+            <div class="card align-middle h-100">
+                <div class="card-body">
+                    <ul class="nav nav-tabs nav-justified mb-3" id="commandTab" role="tablist">
+                        <li class="nav-item">
+                            <a asp-action="Index" class="nav-link">Search</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="savedWords-tab" data-bs-toggle="tab"
+                                data-bs-target="#savedWords" href="#savedWords"
+                                role="tab" aria-controls="savedWords" aria-selected="true">Saved Words</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content my-4">
+                        <div class="tab-pane fade show active" id="saved-words-section" role="tabpanel" aria-labelledby="savedWords-tab" tabindex="0">
+                            <form asp-action="ViewSavedWords">
+                                <div class="row px-4 mb-4">
+                                    <label class="col-sm-3 col-md-2 text-center pt-1">Categories</label>
+                                    <div class="col-sm-7 col-md-9">
+                                        <select class="form-control" name="category" asp-action="ViewSavedWords" asp-items='@(new SelectList(Model.Categories, "Name", "Name", Model.Category?.Name))' required>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2 col-md-1">
+                                        <button type="submit" class="btn btn-block btn-primary w-100">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="accordion accordion-flush" id="saved-words">
+                                @{
+                                    for (Node? n = Model?.Category?.Words.Head; n != null; n = n.Next) {
+                                        <div class="accordion-item">
+                                            <h5 class="accordion-header" id="@("header" + n.Key)">
+                                                <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#@n.Key" aria-expanded="false" aria-controls="@n.Key">
+                                                    @n.Key
+                                                </button>
+                                            </h5>
+                                            <div id="@n.Key" class="accordion-collapse collapse" aria-labelledby="@("header" + n.Key)" data-bs-parent="#saved-words">
+                                                <div class="accordion-body">
+                                                    defi
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        }
-    }
+        </div>
+    </div>
 </div>

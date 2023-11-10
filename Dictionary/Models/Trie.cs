@@ -71,6 +71,8 @@ public class Trie {
         for (int i = 0; i < Constant.ALPHABET_SIZE; i++) {
             if (node.Children[i] != null) {
                 char c = (char)(i + 'a');
+                if (c == '{')
+                    c = '-';
                 SuggestRec(suggestions, node.Children[i], currentPrefix + c);
             }   
         }
@@ -83,6 +85,8 @@ public class Trie {
             int index = c - 'a';
             if (c == '-')
                 index = 26;
+            if (index < 0 || index > 26)
+                return suggestions;
             // no string in the Trie has this prefix
             if (pCrawl.Children[index] == null)
                 return suggestions;

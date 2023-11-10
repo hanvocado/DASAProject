@@ -5,7 +5,9 @@ namespace Dictionary.Services;
 public interface IUserService {
     public void SaveWord(string key, string category);
     public void RemoveWord(string key, string category);
-    public LinkedList? GetWords(string category);
+    public Category? Category(string category);
+    public string? GetWordCategory(string keyword);
+    public List<Category> GetCategories();
     public bool IsSaved(Word? word);
 
 }
@@ -27,7 +29,9 @@ public class UserService : IUserService {
     //         }
     //     }
     // }
-    
+    public List<Category> GetCategories() {
+        return Categories;
+    }
     public void SaveWord(string key, string category)
     {
         Category? tag = Categories.Find(t => t.Name == category);
@@ -48,7 +52,15 @@ public class UserService : IUserService {
         return word.Categories == null ? false : word.Categories.Count() > 0;
     }
 
-    public LinkedList? GetWords(string category) {
-        return Categories.Find(c => c.Name == category)?.Words;
+    public Category? Category(string category) {
+        return Categories.Find(c => c.Name == category);
+    }
+
+    public string? GetWordCategory(string keyword) {
+        foreach (Category cat in Categories) {
+            if (cat.Words.Find(keyword) != null)
+                return cat.Name;
+        }
+        return null;
     }
 }

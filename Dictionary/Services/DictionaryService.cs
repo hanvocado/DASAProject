@@ -58,6 +58,6 @@ public class DictionaryService : IDictionaryService
     public List<string> Suggest(string query) {
         if(String.IsNullOrEmpty(query))
             return new List<string>();
-        return Trie.Suggest(query);
+        return Trie.Suggest(query.ToLower());
     }
 }

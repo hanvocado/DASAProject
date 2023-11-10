@@ -11,7 +11,7 @@
                                 aria-controls="search" aria-selected="true">Search</a>
                         </li>
                         <li class="nav-item">
-                            <a asp-action="SavedWords" class="nav-link">Saved Words</a>
+                            <a asp-action="ViewSavedWords" class="nav-link">Saved Words</a>
                         </li>
                     </ul>
                     <div class="tab-content m-4">
@@ -46,7 +46,26 @@
                                     <div class="mt-4">
                                         <div class="input-group">
                                             <h5 class="card-title pt-1">@Model?.Word?.KeyWord</h5>
-                                            <a asp-action="SaveOrUnsave" asp-route-key="@Model.Word.KeyWord" class="btn btn-link"><i class='@(Model.WordIsSaved ? "fas" : "far") fa-bookmark'></i></a>
+                                            @if (!String.IsNullOrEmpty(Model!.Category)) {
+                                                <div class="dropdown mt-1 mx-3">
+                                                    <button class="badge rounded-pill text-bg-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">@Model.Category</button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a asp-action="ViewSavedWords" asp-route-category="@Model.Category" class="btn btn-link text-decoration-none">
+                                                                View Category
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a asp-action="RemoveWord" asp-route-key="@Model.Word.KeyWord" asp-route-category="@Model.Category" class="btn btn-link text-decoration-none">
+                                                                Remove
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            } else {
+                                                <a asp-action="SaveWord" asp-route-key="@Model.Word.KeyWord" asp-route-category="" class="btn btn-link mx-2"><i class='far fa-bookmark'></i></a>
+                                            }
+                                            @* <a asp-action="SaveOrUnsave" asp-route-key="@Model.Word.KeyWord" class="btn btn-link"><i class='@(Model.WordIsSaved ? "fas" : "far") fa-bookmark'></i></a> *@
                                             @* <a class="btn btn-link d-inline"><i class="fas fa-volume-up"></i></a> *@
                                         </div>
                                         <h6 class="card-subtitle my-2 text-muted">@Model?.Word?.PartOfSpeech</h6>
