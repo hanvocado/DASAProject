@@ -4,14 +4,14 @@ namespace Dictionary.Services;
 
 public interface IUserService {
     public LinkedList GetSavedWords();
-    public List<string> GetFolders();
-    public void SaveOrUnsaveWord(string key);
+    public List<Folder> GetFolders();
+    public void SaveOrUnsaveWord(string key, string folderName);
     public bool IsSaved(string key);
 
 }
 public class UserService : IUserService {
     private LinkedList SavedWords = new LinkedList();
-    private List<string> Folders = new();
+    private List<Folder> Folders = new();
     private IWebHostEnvironment _env;
 
     public UserService(IWebHostEnvironment env) {
@@ -31,20 +31,25 @@ public class UserService : IUserService {
     public LinkedList GetSavedWords() {
         return SavedWords;
     }
-    public List<string> GetFolders() {
+    public List<Folder> GetFolders() {
         return Folders;
     }
     public void AddFolder(string name) {
-        Folders.Add(name);
+        Folders.Add(new Folder(name));
     }
     public void DeleteFolder(string name) {
-        Folders.Remove(name);
+        Folder? folder = FindFolder(name);
+        if (folder == null)
+            return;
+        Folders.Remove(folder);
     }
-    public void SaveOrUnsaveWord(string key) {
+    public Folder? FindFolder(string name) {
+        return Folders.Find(f => f.FolderName() == name);
+    }
+    public void SaveOrUnsaveWord(string key, string FolderName) {
         Node? p = SavedWords.Find(key);
         if (p == null) {
             SavedWords.AddLast(key);
-            
         }
         else {
             SavedWords.Remove(p);

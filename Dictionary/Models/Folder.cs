@@ -1,9 +1,9 @@
 namespace Dictionary.Models;
 
 public class Folder {
-    public string Name { get; set; }
-    public List<string> ChildrenFolder { get; set; } = new();
-    public LinkedList Items { get; set; } = new();
+    private string Name { get; set; }
+    private List<Folder> ChildrenFolder { get; set; } = new();
+    private LinkedList Items { get; set; } = new();
     public Folder(string name) {
         Name = name;
     }
@@ -13,14 +13,17 @@ public class Folder {
     }
 
     public void AddChildFolder(string childName) {
-        ChildrenFolder.Add(childName);
+        ChildrenFolder.Add(new Folder(childName));
     }
-    public void DeleteChildFolder(string childName) {
-        ChildrenFolder.Remove(childName);
+    public List<Folder> GetChildrenFolders(string childName) {
+        return ChildrenFolder;
     }
-    // public Folder GetChildFolder(string childName) {
-
-    // }
+    public string FolderName() {
+        return Name;
+    }
+    public LinkedList GetItems() {
+        return Items;
+    }
     public void AddItem(string key) {
         Items.AddLast(key);
     }
