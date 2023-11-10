@@ -18,3 +18,5 @@ wwwroot
 # Folder: name, list<Folder> children, linkedlist<string> items
 # print tree directory: foreach Folder child in children
 # hash table: <string, Folder>
+
+# tag: name, linkedlist<word> words

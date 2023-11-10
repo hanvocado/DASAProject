@@ -52,3 +52,18 @@ body {
 #savedWords a:hover {
   color: blueviolet!important;
 }
+
+.max-content {
+  width: max-content;
+}
+
+#search-field {
+  border: none;
+  position: relative;
+  z-index: 100;
+}
+.p-absolute {
+  position: absolute;
+  top: 25%;
+  z-index: 1;
+}

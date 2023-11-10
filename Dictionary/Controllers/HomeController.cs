@@ -52,4 +52,12 @@ public class HomeController : Controller
         _user.SaveOrUnsaveWord(key);
         return RedirectToAction(nameof(Index), new { searchStr = key });
     }
+    public IActionResult Suggest(string query)
+    {
+        return Ok(_dictionary.Suggest(query));
+    }
+    public IActionResult SuggestionPartial(string model)
+    {
+        return PartialView("_Suggestion", model);
+    }
 }
