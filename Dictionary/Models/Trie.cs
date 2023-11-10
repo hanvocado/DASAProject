@@ -1,42 +1,101 @@
+using Dictionary.Constants;
+
 namespace Dictionary.Models;
 
 public class Trie {
-    private class Node
+    public class Node
     {
-        public Node[] Children { get; set; } = new Node[26];
-        public int Exist { get; set; }
-        public int Count { get; set; }
-        public Node() {}
+        public Node?[] Children { get; set; } = new Node[Constant.ALPHABET_SIZE];
+        public bool isEndOfWord;
+        public Node() {
+            isEndOfWord = false;
+            for (int i = 0; i < Constant.ALPHABET_SIZE; i++)
+                Children[i] = null;
+        }
     }
     private readonly Node root;
     public Trie() {
         root = new Node();
     }
-    public void AddString(string s)
+
+    // If not present, inserts key into trie
+    // If the key is prefix of trie node, 
+    // just marks leaf node
+    public void Insert(string key)
     {
-        var currentNode = root;
-        foreach (char c in s) {
+        Node pCrawl = root;
+        foreach (char c in key) {
             int index = c - 'a';
-            if (currentNode.Children[index] == null)
-                currentNode.Children[index] = new Node();
+            if (c == '-')
+                index = 26;
+
+            if (pCrawl.Children[index] == null)
+                pCrawl.Children[index] = new Node();
             
-            currentNode = currentNode.Children[index];
-            currentNode.Count++;
+            pCrawl = pCrawl.Children[index]!;
         }
-        currentNode.Exist++;
+        pCrawl.isEndOfWord = true;
     }
 
-    public bool FindString(string s)
+    public bool Found(string key)
     {
-        var currentNode = root;
-        foreach (char c in s)
+        var pCrawl = root;
+        foreach (char c in key)
         {
             int index = c - 'a';
-            if (currentNode.Children[index] == null)
+            if (c == '-')
+                index = 26;
+            if (pCrawl!.Children[index] == null)
                 return false;
             
-            currentNode = currentNode.Children[index];
+            pCrawl = pCrawl.Children[index];
         }
-        return currentNode.Exist != 0;
+        return pCrawl!.isEndOfWord;
+    }
+
+    public bool IsLastNode(Node node) {
+        for (int i = 0; i < Constant.ALPHABET_SIZE; i++) {
+            if (node.Children[i] != null)
+                return false;
+        }
+        return true;
+    }
+
+    // Recursive function to print auto-suggestions for given
+    // node.
+    private void SuggestRec(List<string> suggestions, Node? node, string currentPrefix) {
+        if (node == null) return;
+        if (node.isEndOfWord) {
+            suggestions.Add(currentPrefix);
+        }
+        for (int i = 0; i < Constant.ALPHABET_SIZE; i++) {
+            if (node.Children[i] != null) {
+                char c = (char)(i + 'a');
+                SuggestRec(suggestions, node.Children[i], currentPrefix + c);
+            }   
+        }
+    }
+
+    public List<string> Suggest(string query) {
+        List<string> suggestions = new();
+        Node pCrawl = root;
+        foreach (char c in query) {
+            int index = c - 'a';
+            if (c == '-')
+                index = 26;
+            // no string in the Trie has this prefix
+            if (pCrawl.Children[index] == null)
+                return suggestions;
+            pCrawl = pCrawl.Children[index]!;
+        }
+        // If prefix is present as a word, but
+        // there is no subtree below the last
+        // matching node.
+        if (IsLastNode(pCrawl)) {
+            suggestions.Add(query);
+            return suggestions;
+        }
+        SuggestRec(suggestions, pCrawl, query);
+        return suggestions;
     }
 }

@@ -16,7 +16,7 @@
                     </ul>
                     <div class="tab-content m-4">
                         <div class="tab-pane fade show active" id="search" role="tabpanel" aria-labelledby="search-tab" tabindex="0">
-                            <form asp-action="Index">
+                            <form asp-action="Index" id="search-bar" autocomplete="off">
                                 <div class="row">
                                     <div class="col-md-10 col-sm-10 col-10">
                                         <div class="input-group">
@@ -26,27 +26,34 @@
                                             <a type="button" class="btn btn-link @(Model.ForwardDisabled ? "a-disabled" : "")" asp-action="Forward" asp-route-currentKey="@ViewData["searchStr"]">
                                                 <i class="fas fa-chevron-right fs-4"></i>
                                             </a>
-                                            <input type="text" class="form-control" name="searchStr" placeholder="algorithms" value="@ViewData["searchStr"]"/>
+                                            <div class="form-control"  id="search-field">
+                                                <input type="text" id="searchInput" class="form-control" name="searchStr" placeholder="algorithms" value="@ViewData["searchStr"]"/>
+                                                <div id="suggestions"> </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-block btn-primary col-md-2 col-sm-2 col-2 m-auto">
-                                        <i class="fas fa-search"></i>
-                                    </button>
+                                    <div class="col-md-2 col-sm-2 col-2">
+                                        <button type="submit" class="btn btn-block btn-primary w-100 mt-1">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
-                            @if (Model?.Word == null && ViewData["searchStr"] != null) {
-                                <div class="mx-5 my-3 fw-bold">NOT FOUND</div>
-                            } else if (Model?.Word != null) {
-                                <div class="mt-4">
-                                    <div class="input-group">
-                                        <h5 class="card-title pt-1">@Model?.Word?.KeyWord</h5>
-                                        <a asp-action="SaveOrUnsave" asp-route-key="@Model.Word.KeyWord" class="btn btn-link"><i class='@(Model.WordIsSaved ? "fas" : "far") fa-bookmark'></i></a>
-                                        @* <a class="btn btn-link d-inline"><i class="fas fa-volume-up"></i></a> *@
+                            <div class="p-absolute">
+                                @if (Model?.Word == null && ViewData["searchStr"] != null) {
+                                    <div class="mx-5 my-3 fw-bold">NOT FOUND</div>
+                                } else if (Model?.Word != null) {
+                                    <div class="mt-4">
+                                        <div class="input-group">
+                                            <h5 class="card-title pt-1">@Model?.Word?.KeyWord</h5>
+                                            <a asp-action="SaveOrUnsave" asp-route-key="@Model.Word.KeyWord" class="btn btn-link"><i class='@(Model.WordIsSaved ? "fas" : "far") fa-bookmark'></i></a>
+                                            @* <a class="btn btn-link d-inline"><i class="fas fa-volume-up"></i></a> *@
+                                        </div>
+                                        <h6 class="card-subtitle my-2 text-muted">@Model?.Word?.PartOfSpeech</h6>
+                                        <p class="card-text">@Model?.Word?.Meaning</p>
                                     </div>
-                                    <h6 class="card-subtitle my-2 text-muted">@Model?.Word?.PartOfSpeech</h6>
-                                    <p class="card-text">@Model?.Word?.Meaning</p>
-                                </div>
-                            }
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>

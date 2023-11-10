@@ -6,12 +6,14 @@ namespace Dictionary.Services;
 public interface IDictionaryService
 {
     public Word? LookUp(string? key);
+    public List<string> Suggest(string query);
 }
 
 public class DictionaryService : IDictionaryService
 {
     private IWebHostEnvironment _envi;
     private HashTable Dictionary = new();
+    private Trie Trie = new();
     public DictionaryService(IWebHostEnvironment envi) {
         _envi = envi;
         CreateDictionary();
@@ -38,9 +40,11 @@ public class DictionaryService : IDictionaryService
                 if (parts.Length >= 3)
                 {
                     // Extract the word, part of speech, and meaning
-                    string keyword = parts[0];
+                    string keyword = parts[0].ToLower();
                     string partOfSpeech = parts[1];
                     string meaning = string.Join(" ", parts.Skip(2));
+
+                    Trie.Insert(keyword);
 
                     // Create a Word instance and add it to the list
                     Word word = new Word(keyword, partOfSpeech, meaning);
@@ -49,5 +53,11 @@ public class DictionaryService : IDictionaryService
                 }
             }
         }
+    }
+
+    public List<string> Suggest(string query) {
+        if(String.IsNullOrEmpty(query))
+            return new List<string>();
+        return Trie.Suggest(query);
     }
 }

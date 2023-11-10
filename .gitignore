@@ -7,7 +7,6 @@ gpt
 Banking-Management-System
 obj/
 bin/
-wwwroot/
 
 # use hash table to store words
 # use tree for auto complete
@@ -19,5 +18,4 @@ wwwroot/
 # print tree directory: foreach Folder child in children
 # hash table: <string, Folder>
 
-# List<string> Tags
-# Tag: string Name; List<string> Items
+# tag: name, linkedlist<word> words
