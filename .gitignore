@@ -7,6 +7,8 @@ gpt
 Banking-Management-System
 obj/
 bin/
+src/lib/
+
 
 # use hash table to store words
 # use tree for auto complete
