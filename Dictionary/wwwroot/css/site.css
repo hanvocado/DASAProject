@@ -39,7 +39,8 @@ body {
 }
 
 #saved-words-section {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   height: 332px;
 }
 

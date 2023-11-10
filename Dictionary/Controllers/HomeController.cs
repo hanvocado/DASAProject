@@ -31,6 +31,7 @@ public class HomeController : Controller
             Word = result,
             WordIsSaved = _user.IsSaved(result),
             Category = result == null ? null : _user.GetWordCategory(result.KeyWord!),
+            Categories = _user.GetCategories(),
             ForwardDisabled = _stack.ForwardDisabled(),
             BackwardDisabled = _stack.BackwardDisabled()
         });

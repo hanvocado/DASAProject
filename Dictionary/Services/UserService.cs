@@ -6,6 +6,7 @@ public interface IUserService {
     public void SaveWord(string key, string category);
     public void RemoveWord(string key, string category);
     public Category? Category(string category);
+    public void CreateCategory(string name);
     public string? GetWordCategory(string keyword);
     public List<Category> GetCategories();
     public bool IsSaved(Word? word);
@@ -34,13 +35,13 @@ public class UserService : IUserService {
     }
     public void SaveWord(string key, string category)
     {
-        Category? tag = Categories.Find(t => t.Name == category);
-        if (tag == null)
+        Category? cat = Categories.Find(t => t.Name == category);
+        if (cat == null)
         {
-            tag = new Category(category);
-            Categories.Add(tag);
+            cat = new Category(category);
+            Categories.Add(cat);
         }
-        tag.AddWord(key);
+        cat.AddWord(key);
     }
     public void RemoveWord(string key, string category)
     {
@@ -49,7 +50,7 @@ public class UserService : IUserService {
 
     public bool IsSaved(Word? word) {
         if (word == null) return false;
-        return word.Categories == null ? false : word.Categories.Count() > 0;
+        return word.Categories != null && word.Categories.Count > 0;
     }
 
     public Category? Category(string category) {
@@ -62,5 +63,9 @@ public class UserService : IUserService {
                 return cat.Name;
         }
         return null;
+    }
+    public void CreateCategory(string name) {
+        Category cat = new(name);
+        Categories.Add(cat);
     }
 }

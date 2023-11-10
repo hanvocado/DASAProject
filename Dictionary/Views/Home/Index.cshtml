@@ -26,14 +26,14 @@
                                             <a type="button" class="btn btn-link @(Model.ForwardDisabled ? "a-disabled" : "")" asp-action="Forward" asp-route-currentKey="@ViewData["searchStr"]">
                                                 <i class="fas fa-chevron-right fs-4"></i>
                                             </a>
-                                            <div class="form-control"  id="search-field">
+                                            <div class="form-control m-0 py-0"  id="search-field">
                                                 <input type="text" id="searchInput" class="form-control" name="searchStr" placeholder="algorithms" value="@ViewData["searchStr"]"/>
                                                 <div id="suggestions"> </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2 col-sm-2 col-2">
-                                        <button type="submit" class="btn btn-block btn-primary w-100 mt-1">
+                                        <button type="submit" class="btn btn-block btn-primary w-100">
                                             <i class="fas fa-search"></i>
                                         </button>
                                     </div>
@@ -48,10 +48,10 @@
                                             <h5 class="card-title pt-1">@Model?.Word?.KeyWord</h5>
                                             @if (!String.IsNullOrEmpty(Model!.Category)) {
                                                 <div class="dropdown mt-1 mx-3">
-                                                    <button class="badge rounded-pill text-bg-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">@Model.Category</button>
+                                                    <button class="badge rounded-pill text-bg-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">@Model.Category</button>
                                                     <ul class="dropdown-menu">
                                                         <li>
-                                                            <a asp-action="ViewSavedWords" asp-route-category="@Model.Category" class="btn btn-link text-decoration-none">
+                                                            <a asp-action="ViewSavedWords" asp-route-category="@Model.Category" class="btn btn-link text-none-decoration">
                                                                 View Category
                                                             </a>
                                                         </li>
@@ -63,10 +63,27 @@
                                                     </ul>
                                                 </div>
                                             } else {
-                                                <a asp-action="SaveWord" asp-route-key="@Model.Word.KeyWord" asp-route-category="" class="btn btn-link mx-2"><i class='far fa-bookmark'></i></a>
+                                                <div class="dropdown mt-1 mx-3">
+                                                    <button class="badge rounded-pill text-bg-light dropdown-toggle" 
+                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">Save</button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <form asp-action="SaveWord">
+                                                                <input type="text" name="category" placeholder="Cat..." class="form-control" autocomplete="off" />
+                                                                <input type="hidden" name="key" value="@Model.Word.KeyWord" />
+                                                                <button class="d-none" type="submit">submit</button>
+                                                            </form>
+                                                        </li>
+                                                        @for (int i = 0; i < Model?.Categories?.Count; i++) {
+                                                            <li>
+                                                                <a class="btn btn-link text-decoration-none text-dark" asp-action="SaveWord" asp-route-key="@Model!.Word.KeyWord" asp-route-category="@Model.Categories[i].Name">
+                                                                    @Model?.Categories[i].Name
+                                                                </a>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
                                             }
-                                            @* <a asp-action="SaveOrUnsave" asp-route-key="@Model.Word.KeyWord" class="btn btn-link"><i class='@(Model.WordIsSaved ? "fas" : "far") fa-bookmark'></i></a> *@
-                                            @* <a class="btn btn-link d-inline"><i class="fas fa-volume-up"></i></a> *@
                                         </div>
                                         <h6 class="card-subtitle my-2 text-muted">@Model?.Word?.PartOfSpeech</h6>
                                         <p class="card-text">@Model?.Word?.Meaning</p>
