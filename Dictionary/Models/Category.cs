@@ -9,8 +9,8 @@ public class Category {
         Name = name;
     }
 
-    public void AddWord(string key) {
-        Words.AddLast(key);
+    public void AddWord(Word word) {
+        Words.AddLast(word);
     }
     public void RemoveWord(string key) {
         Words.Remove(key);

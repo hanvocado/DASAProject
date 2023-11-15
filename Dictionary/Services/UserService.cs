@@ -3,8 +3,8 @@ using Dictionary.Models;
 namespace Dictionary.Services;
 
 public interface IUserService {
-    public void SaveWord(string key, string category);
-    public void RemoveWord(string key, string category);
+    public void SaveWord(Word word, string category);
+    public void RemoveWord(Word word, string category);
     public Category? Category(string category);
     public void CreateCategory(string name);
     public string? GetWordCategory(string keyword);
@@ -33,19 +33,23 @@ public class UserService : IUserService {
     public List<Category> GetCategories() {
         return Categories;
     }
-    public void SaveWord(string key, string category)
+    public void SaveWord(Word word, string category)
     {
+        if (word.Categories.Contains(category))
+            return;
         Category? cat = Categories.Find(t => t.Name == category);
         if (cat == null)
         {
             cat = new Category(category);
             Categories.Add(cat);
         }
-        cat.AddWord(key);
+        cat.AddWord(word);
+        word.Categories.Add(category);
     }
-    public void RemoveWord(string key, string category)
+    public void RemoveWord(Word word, string category)
     {
-        Categories.Find(t => t.Name == category)?.RemoveWord(key);
+        Categories.Find(t => t.Name == category)?.RemoveWord(word.KeyWord!);
+        word.Categories.Remove(category);
     }
 
     public bool IsSaved(Word? word) {

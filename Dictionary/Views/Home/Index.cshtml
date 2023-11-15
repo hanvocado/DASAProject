@@ -11,7 +11,7 @@
                                 aria-controls="search" aria-selected="true">Search</a>
                         </li>
                         <li class="nav-item">
-                            <a asp-action="ViewSavedWords" class="nav-link">Saved Words</a>
+                            <a asp-action="Library" class="nav-link">Library</a>
                         </li>
                     </ul>
                     <div class="tab-content m-4">
@@ -46,20 +46,30 @@
                                     <div class="mt-4">
                                         <div class="input-group">
                                             <h5 class="card-title pt-1">@Model?.Word?.KeyWord</h5>
-                                            @if (!String.IsNullOrEmpty(Model!.Category)) {
+                                            @if (Model?.WordCategories?.Count > 0) {
                                                 <div class="dropdown mt-1 mx-3">
-                                                    <button class="badge rounded-pill text-bg-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">@Model.Category</button>
+                                                    <button class="badge rounded-pill text-bg-secondary dropdown-toggle" 
+                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">Saved</button>
                                                     <ul class="dropdown-menu">
                                                         <li>
-                                                            <a asp-action="ViewSavedWords" asp-route-category="@Model.Category" class="btn btn-link text-none-decoration">
-                                                                View Category
-                                                            </a>
+                                                            <form asp-action="SaveWord">
+                                                                <input type="text" name="category" placeholder="Add to another cat..." class="form-control" autocomplete="off" />
+                                                                <input type="hidden" name="key" value="@Model.Word.KeyWord" />
+                                                                <button class="d-none" type="submit">submit</button>
+                                                            </form>
                                                         </li>
-                                                        <li>
-                                                            <a asp-action="RemoveWord" asp-route-key="@Model.Word.KeyWord" asp-route-category="@Model.Category" class="btn btn-link text-decoration-none">
-                                                                Remove
-                                                            </a>
-                                                        </li>
+                                                        @for (int i = 0; i < Model?.WordCategories?.Count; i++) {
+                                                            <li>
+                                                                <div class="row">
+                                                                    <a class="btn btn-link text-decoration-none text-dark col-8 text-start" asp-action="Library" asp-route-category="@Model?.WordCategories[i]">
+                                                                        <span class="mx-2 text-capitalize">@Model?.WordCategories[i]</span>
+                                                                    </a>
+                                                                    <a asp-action="RemoveWord" asp-route-key="@Model?.Word?.KeyWord" asp-route-category="@Model?.WordCategories[i]" class="btn btn-link text-decoration-none text-danger col-4">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </li>
+                                                        }
                                                     </ul>
                                                 </div>
                                             } else {
@@ -70,13 +80,13 @@
                                                         <li>
                                                             <form asp-action="SaveWord">
                                                                 <input type="text" name="category" placeholder="Cat..." class="form-control" autocomplete="off" />
-                                                                <input type="hidden" name="key" value="@Model.Word.KeyWord" />
+                                                                <input type="hidden" name="key" value="@Model?.Word.KeyWord" />
                                                                 <button class="d-none" type="submit">submit</button>
                                                             </form>
                                                         </li>
                                                         @for (int i = 0; i < Model?.Categories?.Count; i++) {
                                                             <li>
-                                                                <a class="btn btn-link text-decoration-none text-dark" asp-action="SaveWord" asp-route-key="@Model!.Word.KeyWord" asp-route-category="@Model.Categories[i].Name">
+                                                                <a class="btn btn-link text-decoration-none text-dark text-capitalize w-100 text-start" asp-action="SaveWord" asp-route-key="@Model!.Word.KeyWord" asp-route-category="@Model.Categories[i].Name">
                                                                     @Model?.Categories[i].Name
                                                                 </a>
                                                             </li>

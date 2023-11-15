@@ -30,7 +30,7 @@ public class HomeController : Controller
         return View(new IndexVM {
             Word = result,
             WordIsSaved = _user.IsSaved(result),
-            Category = result == null ? null : _user.GetWordCategory(result.KeyWord!),
+            WordCategories = result == null ? null : result.Categories,
             Categories = _user.GetCategories(),
             ForwardDisabled = _stack.ForwardDisabled(),
             BackwardDisabled = _stack.BackwardDisabled()
@@ -47,31 +47,33 @@ public class HomeController : Controller
     }
     public IActionResult RemoveWord(string key, string category)
     {
-        _user.RemoveWord(key, category);
+        Word? word = _dictionary.LookUp(key);
+        if (word != null)
+            _user.RemoveWord(word, category);
         return RedirectToAction(nameof(Index), new { searchStr = key });
     }
-    public IActionResult ViewSavedWords(string? category)
+    public IActionResult Library(string? category)
     {
         if (!String.IsNullOrEmpty(category))
             return View(new SavedWordsVM {
                 Category = _user.Category(category),
-                Categories = _user.GetCategories()
+                Categories = _user.GetCategories().Select(c => c.Name)
             });
 
         return View(
             new SavedWordsVM {
-                Categories = _user.GetCategories()
+                Categories = _user.GetCategories().Select(c => c.Name)
             }
         );
     }
     public IActionResult SaveWord(string key, string? category)
     {
-        if (_dictionary.LookUp(key) == null) 
+        Word? word = _dictionary.LookUp(key);
+        if (word == null) 
             return RedirectToAction(nameof(Index));
             
-        if (String.IsNullOrEmpty(category))
-            category = "Default";
-        _user.SaveWord(key, category);
+        if (!String.IsNullOrEmpty(category))
+            _user.SaveWord(word, category.ToLower());
         return RedirectToAction(nameof(Index), new { searchStr = key });
     }
     public IActionResult Suggest(string query)

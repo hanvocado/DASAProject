@@ -1,0 +1,90 @@
+@model SavedWordsVM
+<div class="row vertical-center h-100">
+    <div class="col-sm-12 col-md-8 m-auto">
+        <div class="height-400">
+            <div class="card align-middle h-100">
+                <div class="card-body">
+                    <ul class="nav nav-tabs nav-justified mb-3" id="commandTab" role="tablist">
+                        <li class="nav-item">
+                            <a asp-action="Index" class="nav-link">Search</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="savedWords-tab" data-bs-toggle="tab"
+                                data-bs-target="#savedWords" href="#savedWords"
+                                role="tab" aria-controls="savedWords" aria-selected="true">Library</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content my-4">
+                        <div class="tab-pane fade show active" id="saved-words-section" role="tabpanel" aria-labelledby="savedWords-tab" tabindex="0">
+                            <div class="row px-4 mb-4">
+                                <label class="col-sm-3 col-md-2 pt-1 col-12">Categories</label>
+                                <div class="col-sm-7 col-md-9 col-9 col-12">
+                                    <div class="dropdown">
+                                        <button class="form-control text-muted text-start"
+                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            @(Model?.Category?.Name ?? "Choose a category")
+                                        </button>
+                                        <ul class="dropdown-menu w-100">
+                                            @{
+                                                if (Model?.Categories != null) {
+                                                    foreach (string cat in Model.Categories) {
+                                                        <li><a asp-action="Library" asp-route-category="@cat" class="btn btn-link text-decoration-none text-dark w-100 text-capitalize text-start">
+                                                            @cat</a>
+                                                        </li>
+                                                    }
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            @* <form asp-action="Library">
+                                <div class="row px-4 mb-4">
+                                    <label class="col-sm-3 col-md-2 pt-1 col-12">Categories</label>
+                                    <div class="col-sm-7 col-md-9 col-9">
+                                        <select class="form-control" name="category" asp-items='@(new SelectList(Model.Categories, "Name", "Name", Model.Category?.Name))' required>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2 col-md-1 col-3">
+                                        <button type="submit" class="btn btn-block btn-primary w-100">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form> *@
+                            <div class="accordion accordion-flush mx-2" id="saved-words">
+                                @{
+                                    for (LNode? n = Model?.Category?.Words.Head; n != null; n = n.Next) {
+                                        <div class="accordion-item">
+                                            <h5 class="accordion-header" id="@("header" + n.Word.KeyWord)">
+                                                <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#@n.Word.KeyWord" aria-expanded="false" aria-controls="@n.Word.KeyWord">
+                                                    @n.Word.KeyWord
+                                                </button>
+                                            </h5>
+                                            <div id="@n.Word.KeyWord" class="accordion-collapse collapse" aria-labelledby="@("header" + n.Word.KeyWord)" data-bs-parent="#saved-words">
+                                                <div class="accordion-body">
+                                                    <div class="row">
+                                                        <div class="col-md-11 col-10 text-justify">
+                                                            <span class="text-muted">(@n.Word.PartOfSpeech)</span>
+                                                            @n.Word.Meaning
+                                                        </div>
+                                                        <div class="col-md-1 col-2">
+                                                            <a asp-action="RemoveWord" asp-route-key="@n.Word.KeyWord" asp-route-category="@Model?.Category?.Name" class="btn btn-link text-decoration-none text-danger pt-0 mt-0">
+                                                                <i class="fas fa-trash"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
