@@ -10,9 +10,9 @@ namespace Dictionary.Controllers;
 public class HomeController : Controller
 {
     public readonly IDictionaryService _dictionary;
-    public readonly IStackService _stack;
+    public readonly IBrowseService _stack;
     public readonly IUserService _user;
-    public HomeController(IDictionaryService dictionary, IStackService stack, IUserService user)
+    public HomeController(IDictionaryService dictionary, IBrowseService stack, IUserService user)
     {
         _dictionary = dictionary;
         _stack = stack;

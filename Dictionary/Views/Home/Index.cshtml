@@ -48,8 +48,8 @@
                                             <h5 class="card-title pt-1">@Model?.Word?.KeyWord</h5>
                                             @if (Model?.WordCategories?.Count > 0) {
                                                 <div class="dropdown mt-1 mx-3">
-                                                    <button class="badge rounded-pill text-bg-secondary dropdown-toggle" 
-                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">Saved</button>
+                                                    <button class="btn btn-link pt-0" 
+                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-bookmark"></i></button>
                                                     <ul class="dropdown-menu">
                                                         <li>
                                                             <form asp-action="SaveWord">
@@ -74,8 +74,8 @@
                                                 </div>
                                             } else {
                                                 <div class="dropdown mt-1 mx-3">
-                                                    <button class="badge rounded-pill text-bg-light dropdown-toggle" 
-                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">Save</button>
+                                                    <button class="btn btn-link pt-0" 
+                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="far fa-bookmark"></i></button>
                                                     <ul class="dropdown-menu">
                                                         <li>
                                                             <form asp-action="SaveWord">

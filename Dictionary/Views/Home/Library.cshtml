@@ -20,7 +20,7 @@
                                 <label class="col-sm-3 col-md-2 pt-1 col-12">Categories</label>
                                 <div class="col-sm-7 col-md-9 col-9 col-12">
                                     <div class="dropdown">
-                                        <button class="form-control text-muted text-start"
+                                        <button class="form-control text-muted text-start text-capitalize"
                                             type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             @(Model?.Category?.Name ?? "Choose a category")
                                         </button>
@@ -38,20 +38,6 @@
                                     </div>
                                 </div>
                             </div>
-                            @* <form asp-action="Library">
-                                <div class="row px-4 mb-4">
-                                    <label class="col-sm-3 col-md-2 pt-1 col-12">Categories</label>
-                                    <div class="col-sm-7 col-md-9 col-9">
-                                        <select class="form-control" name="category" asp-items='@(new SelectList(Model.Categories, "Name", "Name", Model.Category?.Name))' required>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-2 col-md-1 col-3">
-                                        <button type="submit" class="btn btn-block btn-primary w-100">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </form> *@
                             <div class="accordion accordion-flush mx-2" id="saved-words">
                                 @{
                                     for (LNode? n = Model?.Category?.Words.Head; n != null; n = n.Next) {

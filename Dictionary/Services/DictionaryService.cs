@@ -33,20 +33,16 @@ public class DictionaryService : IDictionaryService
             string? line;
             while ((line = reader.ReadLine()) != null)
             {
-                // Split the line into parts
                 string[] parts = line.Split(' ');
 
-                // Check if the line contains a word definition
                 if (parts.Length >= 3)
                 {
-                    // Extract the word, part of speech, and meaning
                     string keyword = parts[0].ToLower();
                     string partOfSpeech = parts[1];
                     string meaning = string.Join(" ", parts.Skip(2));
 
                     Trie.Insert(keyword);
 
-                    // Create a Word instance and add it to the list
                     Word word = new Word(keyword, partOfSpeech, meaning);
 
                     Dictionary.Insert(word);

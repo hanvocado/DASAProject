@@ -14,22 +14,7 @@ public interface IUserService {
 }
 public class UserService : IUserService {
     private List<Category> Categories = new();
-    private IWebHostEnvironment _env;
 
-    public UserService(IWebHostEnvironment env) {
-        _env = env;
-        //ReadSavedWords();
-    }
-    // private void ReadSavedWords() {
-    //     string filePath = Path.Combine(_env.WebRootPath, "SavedWords.txt");
-    //     using (var reader = new StreamReader(filePath))
-    //     {
-    //         string? line;
-    //         while ((line = reader.ReadLine()) != null) {
-    //             SavedWords.AddLast(line);
-    //         }
-    //     }
-    // }
     public List<Category> GetCategories() {
         return Categories;
     }

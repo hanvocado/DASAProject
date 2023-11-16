@@ -2,7 +2,7 @@ using Dictionary.Models;
 
 namespace Dictionary.Services;
 
-public interface IStackService {
+public interface IBrowseService {
     public void Searched(string? key);
     public string? Forwarded(string? currentKey);
     public string? Backwarded(string? currentKey);
@@ -10,7 +10,7 @@ public interface IStackService {
     public bool BackwardDisabled();
 }
 
-public class StackService : IStackService
+public class BrowseService : IBrowseService
 {
     private Stack Forward = new Stack();
     private Stack Backward = new Stack();
