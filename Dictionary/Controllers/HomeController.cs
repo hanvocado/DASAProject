@@ -84,4 +84,8 @@ public class HomeController : Controller
     {
         return PartialView("_Suggestion", model);
     }
+
+    public IActionResult WordJumble(string category) {
+        return Ok(_user.PlayWordJumble(category));
+    }
 }

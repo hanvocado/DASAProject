@@ -10,10 +10,12 @@ public interface IUserService {
     public string? GetWordCategory(string keyword);
     public List<Category> GetCategories();
     public bool IsSaved(Word? word);
+    public List<JumbleWord> PlayWordJumble(string category);
 
 }
 public class UserService : IUserService {
     private List<Category> Categories = new();
+    private Random random = new Random();
 
     public List<Category> GetCategories() {
         return Categories;
@@ -56,5 +58,49 @@ public class UserService : IUserService {
     public void CreateCategory(string name) {
         Category cat = new(name);
         Categories.Add(cat);
+    }
+
+    public List<JumbleWord> PlayWordJumble(string category)
+    {
+        Category? cat = Categories.Find(c => c.Name == category);
+        if (cat == null)
+            return new List<JumbleWord>();
+        List<Word> words = Words(cat);
+        ShuffleWords(words);
+
+        List<JumbleWord> jumbleWords = new();
+
+        foreach (Word word in words) {
+            jumbleWords.Add(new JumbleWord(word.KeyWord!, word.Meaning!, ShuffleLetter(word.KeyWord!)));
+        }
+        return jumbleWords;      
+    }
+    private string ShuffleLetter(string origin) {
+        char[] letters = origin.ToCharArray();
+        for (int i = letters.Length -1; i > 0; i--) {
+            int j = random.Next(i+1);
+            char temp = letters[i];
+            letters[i] = letters[j];
+            letters[j] = temp;
+        }
+        return new string(letters);
+    }
+    private void ShuffleWords(List<Word> origin) {
+        for (int i = origin.Count - 1; i > 0; i--) {
+            int j = random.Next(i + 1);
+            Word temp = origin[i];
+            origin[i] = origin[j];
+            origin[j] = temp;
+        }
+    }
+
+    private List<Word> Words(Category cat)
+    {
+        List<Word> words = new List<Word>();
+        for (LNode? n = cat.Words.Head; n != null; n = n.Next)
+        {
+            words.Add(n.Word);
+        }
+        return words;
     }
 }
