@@ -2,7 +2,6 @@
   $("#searchInput").on("input", function () {
     var query = $(this).val();
 
-    // Send AJAX request to the server
     $.ajax({
       url: "/Home/Suggest",
       type: "GET",
@@ -17,12 +16,10 @@
   });
 
   
-  // Function to display suggestions in the suggestionList div
   function displaySuggestions(suggestions) {
     var suggestionList = $("#suggestions");
-    suggestionList.empty(); // Clear previous suggestions
+    suggestionList.empty();
 
-    // Display each suggestion in a list item
     for (var i = 0; i < Math.min(suggestions.length, 6); i++) {
       $.get(
         "/Home/SuggestionPartial",

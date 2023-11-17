@@ -17,6 +17,10 @@ public class UserService : IUserService {
     private List<Category> Categories = new();
     private Random random = new Random();
     private List<JumbleWord>? JumbleWords;
+    private IHttpContextAccessor _http;
+    public UserService(IHttpContextAccessor http) {
+        _http = http;
+    }
 
     public List<Category> GetCategories() {
         return Categories;
@@ -64,22 +68,23 @@ public class UserService : IUserService {
     private List<JumbleWord> InitWordJumble(string? category)
     {
         Category? cat = Categories.Find(c => c.Name == category);
-        cat ??= Categories[random.Next(Categories.Count + 1)];
+        cat ??= Categories[random.Next(Categories.Count)];
         List<Word> words = Words(cat);
         ShuffleWords(words);
         JumbleWords = new();
         foreach (Word word in words) {
             JumbleWords.Add(new JumbleWord(word.KeyWord!, word.Meaning!, ShuffleLetter(word.KeyWord!)));
         }
+        _http.HttpContext?.Session.SetInt32("TotalQuestions", JumbleWords.Count);
         return JumbleWords;      
     }
     public JumbleWord? PlayWordJumble(string? cat, int i) {
+
         if (i < 0) return null;
-        if (i == 0 || JumbleWords == null || JumbleWords.Count == 0) 
+        if (i == 0 || JumbleWords == null || JumbleWords.Count == 0) {
             InitWordJumble(cat);
-        if (JumbleWords!.Count == 0) return null;
-        if (JumbleWords!.Count <= i)
-            return new JumbleWord();
+        }
+        if (JumbleWords!.Count == 0 || JumbleWords!.Count <= i) return null;
         return JumbleWords[i];
     }
     private string ShuffleLetter(string origin) {

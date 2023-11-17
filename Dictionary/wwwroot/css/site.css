@@ -71,3 +71,6 @@ body {
 .text-justify {
   text-align: justify;
 }
+.letter-space-lg {
+  letter-spacing: 5px;
+}

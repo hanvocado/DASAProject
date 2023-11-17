@@ -82,20 +82,42 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult WordJumble(string? category, int i = 0, int noCorrectAnswers = 0, int noQuestions = 0) {
+    public IActionResult WordJumble(string? category, int i = 0) {
+        if (i == 0) {
+            HttpContext.Session.SetInt32("NoCorrectAnswers", 0);
+            HttpContext.Session.SetInt32("NoQuestions", 0);
+        }
+        int? noCorrectAnswers = GetNoCorrectAnswers("NoCorrectAnswers");
+        int? noQuestions = GetNoCorrectAnswers("NoQuestions");
+        int? totalQuestions = GetNoCorrectAnswers("TotalQuestions");
+        if (noCorrectAnswers == null)
+            HttpContext.Session.SetInt32("NoCorrectAnswers", 0);
+        if (noCorrectAnswers == null)
+            HttpContext.Session.SetInt32("NoQuestions", 0);
+
         JumbleWord? jumbleWord = _user.PlayWordJumble(category, i);
-        if (jumbleWord == null)
-            return RedirectToAction(nameof(Index));
-        if (String.IsNullOrEmpty(jumbleWord.KeyWord))
+
+        if (totalQuestions != null && i >= totalQuestions - 1) {
             i = -9;
-        return View(new WordJumbleVM(i, jumbleWord, noCorrectAnswers, noQuestions));
+        }
+        if (jumbleWord == null)
+            return RedirectToAction(nameof(Library));
+
+        return View(new WordJumbleVM(i, jumbleWord));
     }
 
     [HttpPost]
-    public IActionResult WordJumblePost(string originalWord, string userAnswer, int currentIndex, int noQuestions, int noCorrectAnswers) {
+    public IActionResult WordJumblePost(string originalWord, string userAnswer, int currentIndex) {
         bool isCorrect = String.Equals(originalWord, userAnswer, StringComparison.OrdinalIgnoreCase);
-        if (isCorrect)
-            noCorrectAnswers += 1;
+        int noCorrectAnswers = GetNoCorrectAnswers("NoCorrectAnswers");
+        int noQuestions = GetNoCorrectAnswers("NoQuestions");
+        if (isCorrect) {
+            HttpContext.Session.SetInt32("NoCorrectAnswers", noCorrectAnswers + 1);
+        }
+        HttpContext.Session.SetInt32("NoQuestions", noQuestions + 1);
         return PartialView("_JWResult", new WJResultVM(isCorrect, originalWord, currentIndex + 1));
+    }
+    private int GetNoCorrectAnswers(string name) {
+        return HttpContext.Session.GetInt32(name) ?? 0;
     }
 }

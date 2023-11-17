@@ -1,18 +1,32 @@
 @model WJResultVM
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 
+@{
+    int wjIndex = 0;
+    string buttonText = "Play again";
+    if (Model.NextIndex > 0) {
+        wjIndex = Model.NextIndex;
+        buttonText = "Next";
+    }
+    int noCorrectAnswers = HttpContextAccessor.HttpContext?.Session.GetInt32("NoCorrectAnswers") ?? 0;
+    int noQuestions = HttpContextAccessor.HttpContext?.Session.GetInt32("NoQuestions") ?? 0;
+}
 @if (Model.Won) {
-    <div>You won</div>
+    <h1 class="fw-bold">YOU ARE CORRECT!</h1>
 } else {
-    <div>You lost</div>
-    <div>The correct word: @Model.OriginalWord</div>
+    <h1 class="fw-bold">Incorrect</h1>
+    <div>The correct word: <span class="fs-5">@Model.OriginalWord</span></div>
 }
-
-@if (Model.NextIndex <= 0) {
-    <div class="f-right">
-        <a asp-action="WordJumble" asp-route-i="0">Play again</a>
+<div class="row p-3">
+    <div class="col-6">
+        Your score: @noCorrectAnswers/@noQuestions
     </div>
-} else {
-    <div>
-        <a asp-action="WordJumble" asp-route-i="@Model.NextIndex">Next</a>
+    <div class="col-6 text-end">
+        <form asp-action="WordJumble" asp-controller="Home" method="post">
+            <input type="hidden" name="i" value="@wjIndex" />
+            <button type="submit" class="btn btn-primary">@buttonText</button>
+            <a type="button" asp-action="Library" class="btn btn-secondary @(wjIndex > 0 ? "d-none" : "")">Exit</a>
+        </form>
     </div>
-}
+</div>

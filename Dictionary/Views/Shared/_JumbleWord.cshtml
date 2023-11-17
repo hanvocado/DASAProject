@@ -2,16 +2,16 @@
 
 <div class="px-4">
     <div class="fw-bold">@Model.Word.Def</div>
-    <div class="text-uppercase py-4">@Model.Word.ShuffledWord</div>
+    <div class="text-uppercase py-4 text-center letter-space-lg">@Model.Word.ShuffledWord</div>
     <form method="post" id="wjGame" autocomplete="off">
         <div class="input-group">
             <input type="hidden" id="originalWord" value="@Model.Word.KeyWord" />
             <input type="hidden" id="currentIndex" value="@Model.Index">
-            <input type="hidden" id="noCorrectAnswers" value="@Model.NoCorrectAnswers" />
-            <input type="hidden" id="noQuestions" value="@Model.NoQuestions">
             <input type="text" id="userAnswer" class="form-control" />
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </form>
-    <a class="btn btn-secondary" asp-action="Library" asp-controller="Home">Exit</a>
+    <div class="text-end my-5">
+        <a class="btn btn-secondary" asp-action="Library" asp-controller="Home">Exit</a>
+    </div>
 </div>
