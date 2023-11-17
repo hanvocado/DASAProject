@@ -38,7 +38,10 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <a asp-action="WordJumble" asp-route-category="@Model?.Category?.Name" class="@(Model?.Category?.Name == null ? "d-none" : "")">Play Word Jumble</a>
+                                    <form asp-action="WordJumble" method="post">
+                                        <input type="hidden" name="category" value="@Model?.Category?.Name" />
+                                        <button type="submit" class="btn btn-primary">Play Word Jumble</button>
+                                    </form>
                                 </div>
                             </div>
                             <div class="accordion accordion-flush mx-2" id="saved-words">

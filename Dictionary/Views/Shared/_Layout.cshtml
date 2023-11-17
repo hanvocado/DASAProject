@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    
+    @await Html.PartialAsync("_Modal")
     <div class="container-fluid m-auto">
         @RenderBody()
     </div>

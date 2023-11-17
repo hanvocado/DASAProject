@@ -1,0 +1,18 @@
+@model WJResultVM
+
+@if (Model.Won) {
+    <div>You won</div>
+} else {
+    <div>You lost</div>
+    <div>The correct word: @Model.OriginalWord</div>
+}
+
+@if (Model.NextIndex <= 0) {
+    <div class="f-right">
+        <a asp-action="WordJumble" asp-route-i="0">Play again</a>
+    </div>
+} else {
+    <div>
+        <a asp-action="WordJumble" asp-route-i="@Model.NextIndex">Next</a>
+    </div>
+}

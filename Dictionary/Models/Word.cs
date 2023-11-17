@@ -15,13 +15,14 @@ public class Word {
 
 public class JumbleWord
 {
-    public string KeyWord { get; set; }
-    public string Def { get; set; }
-    public string ShuffledWord { get; set; }
+    public string? KeyWord { get; set; }
+    public string? Def { get; set; }
+    public string? ShuffledWord { get; set; }
     public JumbleWord(string key, string def, string shuffledWord)
     {
         KeyWord = key;
         Def = def;
         ShuffledWord = shuffledWord;
     }
+    public JumbleWord() {}
 }

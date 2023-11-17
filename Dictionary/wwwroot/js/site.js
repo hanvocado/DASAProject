@@ -4,11 +4,10 @@
 
     // Send AJAX request to the server
     $.ajax({
-      url: "/Home/Suggest", // Update with your actual controller and action
+      url: "/Home/Suggest",
       type: "GET",
       data: { query: query },
       success: function (data) {
-        // Update your UI with the suggestions received from the server
         displaySuggestions(data);
       },
       error: function (error) {
@@ -17,6 +16,7 @@
     });
   });
 
+  
   // Function to display suggestions in the suggestionList div
   function displaySuggestions(suggestions) {
     var suggestionList = $("#suggestions");
@@ -33,4 +33,26 @@
       );
     }
   }
+  
+  let wjGameForm = document.getElementById("wjGame");
+  wjGameForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    var originalWord = $("#originalWord").val();
+    var userAnswer = $("#userAnswer").val();
+    var currentIndex = $("#currentIndex").val();
+    console.log(originalWord);
+    console.log(userAnswer);
+    $.ajax({
+      url: "/Home/WordJumblePost",
+      type: "POST",
+      data: { originalWord : originalWord, userAnswer : userAnswer, currentIndex : currentIndex },
+      success: function (partialHtml) {
+        $("#WJResultModal .modal-body").html(partialHtml);
+        $("#WJResultModal").modal("show");
+      },
+      error: function (err) {
+        console.error("Error word jumble playing: ", err);
+      }
+    })
+  })
 });

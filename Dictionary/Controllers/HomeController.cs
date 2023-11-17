@@ -12,6 +12,7 @@ public class HomeController : Controller
     public readonly IDictionaryService _dictionary;
     public readonly IBrowseService _stack;
     public readonly IUserService _user;
+
     public HomeController(IDictionaryService dictionary, IBrowseService stack, IUserService user)
     {
         _dictionary = dictionary;
@@ -54,14 +55,9 @@ public class HomeController : Controller
     }
     public IActionResult Library(string? category)
     {
-        if (!String.IsNullOrEmpty(category))
-            return View(new SavedWordsVM {
-                Category = _user.Category(category),
-                Categories = _user.GetCategories().Select(c => c.Name)
-            });
-
         return View(
             new SavedWordsVM {
+                Category = String.IsNullOrEmpty(category) ? null : _user.Category(category),
                 Categories = _user.GetCategories().Select(c => c.Name)
             }
         );
@@ -85,7 +81,21 @@ public class HomeController : Controller
         return PartialView("_Suggestion", model);
     }
 
-    public IActionResult WordJumble(string category) {
-        return Ok(_user.PlayWordJumble(category));
+    [HttpPost]
+    public IActionResult WordJumble(string? category, int i = 0, int noCorrectAnswers = 0, int noQuestions = 0) {
+        JumbleWord? jumbleWord = _user.PlayWordJumble(category, i);
+        if (jumbleWord == null)
+            return RedirectToAction(nameof(Index));
+        if (String.IsNullOrEmpty(jumbleWord.KeyWord))
+            i = -9;
+        return View(new WordJumbleVM(i, jumbleWord, noCorrectAnswers, noQuestions));
+    }
+
+    [HttpPost]
+    public IActionResult WordJumblePost(string originalWord, string userAnswer, int currentIndex, int noQuestions, int noCorrectAnswers) {
+        bool isCorrect = String.Equals(originalWord, userAnswer, StringComparison.OrdinalIgnoreCase);
+        if (isCorrect)
+            noCorrectAnswers += 1;
+        return PartialView("_JWResult", new WJResultVM(isCorrect, originalWord, currentIndex + 1));
     }
 }
