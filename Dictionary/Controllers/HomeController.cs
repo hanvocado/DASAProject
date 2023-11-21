@@ -117,4 +117,8 @@ public class HomeController : Controller
     private int GetNumInSession(string name) {
         return HttpContext.Session.GetInt32(name) ?? 0;
     }
+
+    public IActionResult SpellCheck(string key) {
+        return Ok(_dictionary.AutoCorrect(key));
+    }
 }

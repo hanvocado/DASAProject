@@ -102,4 +102,21 @@ public class Trie {
         SuggestRec(suggestions, pCrawl, query);
         return suggestions;
     }
+
+    public string Find(string input)
+    {
+        var pCrawl = root;
+        string res = "";
+        foreach (char c in input)
+        {
+            int index = c - 'a';
+            if (c == '-')
+                index = 26;
+            if (pCrawl!.Children[index] == null)
+                return res;
+            res += c;
+            pCrawl = pCrawl.Children[index];
+        }
+        return res;
+    }
 }
