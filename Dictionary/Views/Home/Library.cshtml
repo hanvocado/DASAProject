@@ -41,7 +41,7 @@
                                     <form asp-action="WordJumble" method="post">
                                         <input type="hidden" name="category" value="@Model?.Category?.Name" />
                                         <input type="hidden" name="i" value="0" />
-                                        <button type="submit" class="btn btn-primary" @((Model?.Categories?.Count) <= 0 ? "disabled" : "" )>Play & Learn</button>
+                                        <button type="submit" class="btn btn-primary" @((Model?.Categories?.Count) <= 0 ? "disabled" : "" )>Play word jumble</button>
                                     </form>
                                 </div>
                             </div>

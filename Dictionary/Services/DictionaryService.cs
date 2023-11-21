@@ -74,7 +74,7 @@ public class DictionaryService : IDictionaryService
         userInput = userInput.ToLower();
         string prefix = Trie.Find(userInput);
         if (String.Equals(userInput, prefix))
-            return "";
+            return userInput;
         
         List<String> suggestions = TrieWordsOnly.Suggest(prefix);
         

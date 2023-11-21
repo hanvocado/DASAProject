@@ -26,17 +26,25 @@ public class HomeController : Controller
         ViewData["searchStr"] = searchStr;
 
         _stack.Searched(searchStr);
-        
-        Word? result = _dictionary.LookUp(searchStr);
+        Word? result = null;
 
-        return View(new IndexVM {
-            Word = result,
-            WordIsSaved = _user.IsSaved(result),
-            WordCategories = result == null ? null : result.Categories,
+        IndexVM vm = new IndexVM {
             Categories = _user.GetCategories(),
             ForwardDisabled = _stack.ForwardDisabled(),
             BackwardDisabled = _stack.BackwardDisabled()
-        });
+        };
+        if (!String.IsNullOrEmpty(searchStr)) {
+            result = _dictionary.LookUp(searchStr);
+            string correctedWord = SpellCheck(searchStr);
+            if (!String.Equals(searchStr, correctedWord, StringComparison.OrdinalIgnoreCase))
+                vm.AutoCorrect = SpellCheck(searchStr);
+            else {
+                vm.Word = result;
+                vm.WordIsSaved = _user.IsSaved(result);
+            }
+        }
+
+        return View(vm);
     }
 
     public IActionResult Backward(string? currentKey)
@@ -118,7 +126,7 @@ public class HomeController : Controller
         return HttpContext.Session.GetInt32(name) ?? 0;
     }
 
-    public IActionResult SpellCheck(string key) {
-        return Ok(_dictionary.AutoCorrect(key));
+    private string SpellCheck(string key) {
+        return _dictionary.AutoCorrect(key);
     }
 }
