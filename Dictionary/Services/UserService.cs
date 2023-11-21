@@ -1,3 +1,4 @@
+using Dictionary.Constants;
 using Dictionary.Models;
 
 namespace Dictionary.Services;
@@ -75,7 +76,7 @@ public class UserService : IUserService {
         foreach (Word word in words) {
             JumbleWords.Add(new JumbleWord(word.KeyWord!, word.Meaning!, ShuffleLetter(word.KeyWord!)));
         }
-        _http.HttpContext?.Session.SetInt32("TotalQuestions", JumbleWords.Count);
+        _http.HttpContext?.Session.SetInt32(Constant.SessionKeyName.TotalQuestions, JumbleWords.Count);
         return JumbleWords;      
     }
     public JumbleWord? PlayWordJumble(string? cat, int i) {

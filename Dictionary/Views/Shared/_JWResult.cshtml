@@ -3,9 +3,10 @@
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
+    int totalQuestions = HttpContextAccessor.HttpContext?.Session.GetInt32("TotalQuestions") ?? 0;
     int wjIndex = 0;
     string buttonText = "Play again";
-    if (Model.NextIndex > 0) {
+    if (Model.NextIndex > 0 && Model.NextIndex < totalQuestions) {
         wjIndex = Model.NextIndex;
         buttonText = "Next";
     }

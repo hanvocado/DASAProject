@@ -4,6 +4,7 @@ using Dictionary.Models;
 using Dictionary.Services;
 using Dictionary.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Dictionary.Constants;
 
 namespace Dictionary.Controllers;
 
@@ -58,7 +59,7 @@ public class HomeController : Controller
         return View(
             new SavedWordsVM {
                 Category = String.IsNullOrEmpty(category) ? null : _user.Category(category),
-                Categories = _user.GetCategories().Select(c => c.Name)
+                Categories = _user.GetCategories().Select(c => c.Name).ToList()
             }
         );
     }
@@ -84,22 +85,18 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult WordJumble(string? category, int i = 0) {
         if (i == 0) {
-            HttpContext.Session.SetInt32("NoCorrectAnswers", 0);
-            HttpContext.Session.SetInt32("NoQuestions", 0);
+            HttpContext.Session.SetInt32(Constant.SessionKeyName.NoCorrectAnswers, 0);
+            HttpContext.Session.SetInt32(Constant.SessionKeyName.NoQuestions, 0);
         }
-        int? noCorrectAnswers = GetNoCorrectAnswers("NoCorrectAnswers");
-        int? noQuestions = GetNoCorrectAnswers("NoQuestions");
-        int? totalQuestions = GetNoCorrectAnswers("TotalQuestions");
+        int? noCorrectAnswers = GetNumInSession(Constant.SessionKeyName.NoCorrectAnswers);
+        int? noQuestions = GetNumInSession(Constant.SessionKeyName.NoQuestions);
         if (noCorrectAnswers == null)
-            HttpContext.Session.SetInt32("NoCorrectAnswers", 0);
+            HttpContext.Session.SetInt32(Constant.SessionKeyName.NoCorrectAnswers, 0);
         if (noCorrectAnswers == null)
-            HttpContext.Session.SetInt32("NoQuestions", 0);
+            HttpContext.Session.SetInt32(Constant.SessionKeyName.NoQuestions, 0);
 
         JumbleWord? jumbleWord = _user.PlayWordJumble(category, i);
 
-        if (totalQuestions != null && i >= totalQuestions - 1) {
-            i = -9;
-        }
         if (jumbleWord == null)
             return RedirectToAction(nameof(Library));
 
@@ -109,15 +106,15 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult WordJumblePost(string originalWord, string userAnswer, int currentIndex) {
         bool isCorrect = String.Equals(originalWord, userAnswer, StringComparison.OrdinalIgnoreCase);
-        int noCorrectAnswers = GetNoCorrectAnswers("NoCorrectAnswers");
-        int noQuestions = GetNoCorrectAnswers("NoQuestions");
+        int noCorrectAnswers = GetNumInSession(Constant.SessionKeyName.NoCorrectAnswers);
+        int noQuestions = GetNumInSession(Constant.SessionKeyName.NoQuestions);
         if (isCorrect) {
-            HttpContext.Session.SetInt32("NoCorrectAnswers", noCorrectAnswers + 1);
+            HttpContext.Session.SetInt32(Constant.SessionKeyName.NoCorrectAnswers, noCorrectAnswers + 1);
         }
-        HttpContext.Session.SetInt32("NoQuestions", noQuestions + 1);
+        HttpContext.Session.SetInt32(Constant.SessionKeyName.NoQuestions, noQuestions + 1);
         return PartialView("_JWResult", new WJResultVM(isCorrect, originalWord, currentIndex + 1));
     }
-    private int GetNoCorrectAnswers(string name) {
+    private int GetNumInSession(string name) {
         return HttpContext.Session.GetInt32(name) ?? 0;
     }
 }

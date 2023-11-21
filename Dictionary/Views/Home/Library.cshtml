@@ -18,7 +18,7 @@
                         <div class="tab-pane fade show active" id="saved-words-section" role="tabpanel" aria-labelledby="savedWords-tab" tabindex="0">
                             <div class="row px-4 mb-4">
                                 <label class="col-sm-3 col-md-2 pt-1 col-12">Categories</label>
-                                <div class="col-sm-7 col-md-9 col-9 col-12">
+                                <div class="col-sm-5 col-md-7 col-9 col-12">
                                     <div class="dropdown">
                                         <button class="form-control text-muted text-start text-capitalize"
                                             type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -37,10 +37,11 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="col-12">
+                                <div class="col-sm-4 col-md-3 col-12 text-end">
                                     <form asp-action="WordJumble" method="post">
                                         <input type="hidden" name="category" value="@Model?.Category?.Name" />
-                                        <button type="submit" class="btn btn-primary">Play Word Jumble</button>
+                                        <input type="hidden" name="i" value="0" />
+                                        <button type="submit" class="btn btn-primary" @((Model?.Categories?.Count) <= 0 ? "disabled" : "" )>Play & Learn</button>
                                     </form>
                                 </div>
                             </div>
