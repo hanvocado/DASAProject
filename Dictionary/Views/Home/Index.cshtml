@@ -1,115 +1,106 @@
 ﻿@model IndexVM
-<div class="row vertical-center h-100">
-    <div class="col-sm-12 col-md-8 m-auto">
-        <div class="height-400">
-            <div class="card align-middle h-100">
-                <div class="card-body">
-                    <ul class="nav nav-tabs nav-justified mb-3" id="commandTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link active" id="search-tab" data-bs-toggle="tab"
-                                data-bs-target="#search" href="#search" role="tab"
-                                aria-controls="search" aria-selected="true">Search</a>
-                        </li>
-                        <li class="nav-item">
-                            <a asp-action="Library" class="nav-link">Library</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content m-4">
-                        <div class="tab-pane fade show active" id="search" role="tabpanel" aria-labelledby="search-tab" tabindex="0">
-                            <form asp-action="Index" id="search-bar" autocomplete="off">
-                                <div class="row">
-                                    <div class="col-md-10 col-sm-10 col-10">
-                                        <div class="input-group">
-                                            <a type="button" class='btn btn-link px-0 @(Model.BackwardDisabled ? "a-disabled" : "")' asp-action="Backward" asp-route-currentKey="@ViewData["searchStr"]">
-                                                <i class="fas fa-chevron-left fs-4"></i>
-                                            </a>
-                                            <a type="button" class="btn btn-link @(Model.ForwardDisabled ? "a-disabled" : "")" asp-action="Forward" asp-route-currentKey="@ViewData["searchStr"]">
-                                                <i class="fas fa-chevron-right fs-4"></i>
-                                            </a>
-                                            <div class="form-control m-0 py-0"  id="search-field">
-                                                <input type="text" id="searchInput" class="form-control" name="searchStr" placeholder="algorithms" value="@ViewData["searchStr"]"/>
-                                                <div id="suggestions"> </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2 col-sm-2 col-2">
-                                        <button type="submit" class="btn btn-block btn-primary w-100">
-                                            <i class="fas fa-search"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                            <div class="p-absolute">
-                                @if (Model?.AutoCorrect != null) {
-                                    <div class="m-5 fs-5 px-3">
-                                        Did you mean 
-                                        <a asp-action="Index" asp-controller="Home" asp-route-searchStr="@Model.AutoCorrect" class="fw-bold">@Model.AutoCorrect</a>
-                                        ?
-                                    </div>
-                                } else if (Model?.Word == null && ViewData["searchStr"] != null && Model?.AutoCorrect == null) {
-                                    <div class="m-5 px-3">Sorry, our dictionary has not contain this word.</div>
-                                } else if (Model?.Word != null) {
-                                    <div class="mt-4">
-                                        <div class="input-group">
-                                            <h5 class="card-title pt-1">@Model?.Word?.KeyWord</h5>
-                                            @if (Model?.Word?.Categories.Count > 0) {
-                                                <div class="dropdown mt-1 mx-3">
-                                                    <button class="btn btn-link pt-0" 
-                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-bookmark"></i></button>
-                                                    <ul class="dropdown-menu">
-                                                        <li>
-                                                            <form asp-action="SaveWord">
-                                                                <input type="text" name="category" placeholder="Add to another cat..." class="form-control" autocomplete="off" />
-                                                                <input type="hidden" name="key" value="@Model.Word.KeyWord" />
-                                                                <button class="d-none" type="submit">submit</button>
-                                                            </form>
-                                                        </li>
-                                                        @for (int i = 0; i < Model?.Word.Categories.Count; i++) {
-                                                            <li>
-                                                                <div class="row">
-                                                                    <a class="btn btn-link text-decoration-none text-dark col-8 text-start" asp-action="Library" asp-route-category="@Model?.Word.Categories[i]">
-                                                                        <span class="mx-2 text-capitalize">@Model?.Word.Categories[i]</span>
-                                                                    </a>
-                                                                    <a asp-action="RemoveWord" asp-route-key="@Model?.Word?.KeyWord" asp-route-category="@Model?.Word.Categories[i]" class="btn btn-link text-decoration-none text-danger col-4">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </li>
-                                                        }
-                                                    </ul>
-                                                </div>
-                                            } else {
-                                                <div class="dropdown mt-1 mx-3">
-                                                    <button class="btn btn-link pt-0" 
-                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="far fa-bookmark"></i></button>
-                                                    <ul class="dropdown-menu">
-                                                        <li>
-                                                            <form asp-action="SaveWord">
-                                                                <input type="text" name="category" placeholder="Cat..." class="form-control" autocomplete="off" />
-                                                                <input type="hidden" name="key" value="@Model?.Word.KeyWord" />
-                                                                <button class="d-none" type="submit">submit</button>
-                                                            </form>
-                                                        </li>
-                                                        @for (int i = 0; i < Model?.Categories?.Count; i++) {
-                                                            <li>
-                                                                <a class="btn btn-link text-decoration-none text-dark text-capitalize w-100 text-start" asp-action="SaveWord" asp-route-key="@Model!.Word.KeyWord" asp-route-category="@Model.Categories[i].Name">
-                                                                    @Model?.Categories[i].Name
-                                                                </a>
-                                                            </li>
-                                                        }
-                                                    </ul>
-                                                </div>
-                                            }
-                                        </div>
-                                        <h6 class="card-subtitle my-2 text-muted">@Model?.Word?.PartOfSpeech</h6>
-                                        <p class="card-text">@Model?.Word?.Meaning</p>
-                                    </div>
-                                }
-                            </div>
+
+<ul class="nav nav-tabs nav-justified mb-3" id="commandTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="search-tab" data-bs-toggle="tab"
+            data-bs-target="#search" href="#search" role="tab"
+            aria-controls="search" aria-selected="true">Search</a>
+    </li>
+    <li class="nav-item">
+        <a asp-action="Library" class="nav-link">Library</a>
+    </li>
+</ul>
+<div class="tab-content m-4">
+    <div class="tab-pane fade show active" id="search" role="tabpanel" aria-labelledby="search-tab" tabindex="0">
+        <form asp-action="Index" id="search-bar" autocomplete="off">
+            <div class="row">
+                <div class="col-md-10 col-sm-10 col-10">
+                    <div class="input-group">
+                        <a type="button" class='btn btn-link px-0 @(Model.BackwardDisabled ? "a-disabled" : "")' asp-action="Backward" asp-route-currentKey="@ViewData["searchStr"]">
+                            <i class="fas fa-chevron-left fs-4"></i>
+                        </a>
+                        <a type="button" class="btn btn-link @(Model.ForwardDisabled ? "a-disabled" : "")" asp-action="Forward" asp-route-currentKey="@ViewData["searchStr"]">
+                            <i class="fas fa-chevron-right fs-4"></i>
+                        </a>
+                        <div class="form-control m-0 py-0"  id="search-field">
+                            <input type="text" id="searchInput" class="form-control" name="searchStr" placeholder="algorithms" value="@ViewData["searchStr"]"/>
+                            <div id="suggestions"> </div>
                         </div>
                     </div>
                 </div>
+                <div class="col-md-2 col-sm-2 col-2">
+                    <button type="submit" class="btn btn-block btn-primary w-100">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
             </div>
+        </form>
+        <div class="p-absolute my-4">
+            @if (Model?.AutoCorrect != null) {
+                <div class="m-5 fs-5 px-3">
+                    Did you mean 
+                    <a asp-action="Index" asp-controller="Home" asp-route-searchStr="@Model.AutoCorrect" class="fw-bold">@Model.AutoCorrect</a>
+                    ?
+                </div>
+            } else if (Model?.Word == null && ViewData["searchStr"] != null && Model?.AutoCorrect == null) {
+                <div class="m-5 px-3">Sorry, our dictionary has not contain this word.</div>
+            } else if (Model?.Word != null) {
+                <div class="mt-4">
+                    <div class="input-group">
+                        <h5 class="card-title pt-1">@Model?.Word?.KeyWord</h5>
+                        @if (Model?.Word?.Categories.Count > 0) {
+                            <div class="dropdown mt-1 mx-3">
+                                <button class="btn btn-link pt-0" 
+                                    type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-bookmark"></i></button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <form asp-action="SaveWord">
+                                            <input type="text" name="category" placeholder="Add to another cat..." class="form-control" autocomplete="off" />
+                                            <input type="hidden" name="key" value="@Model.Word.KeyWord" />
+                                            <button class="d-none" type="submit">submit</button>
+                                        </form>
+                                    </li>
+                                    @for (int i = 0; i < Model?.Word.Categories.Count; i++) {
+                                        <li>
+                                            <div class="row">
+                                                <a class="btn btn-link text-decoration-none text-dark col-8 text-start" asp-action="Library" asp-route-category="@Model?.Word.Categories[i]">
+                                                    <span class="mx-2 text-capitalize">@Model?.Word.Categories[i]</span>
+                                                </a>
+                                                <a asp-action="RemoveWord" asp-route-key="@Model?.Word?.KeyWord" asp-route-category="@Model?.Word.Categories[i]" class="btn btn-link text-decoration-none text-danger col-4">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        } else {
+                            <div class="dropdown mt-1 mx-3">
+                                <button class="btn btn-link pt-0" 
+                                    type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="far fa-bookmark"></i></button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <form asp-action="SaveWord">
+                                            <input type="text" name="category" placeholder="Cat..." class="form-control" autocomplete="off" />
+                                            <input type="hidden" name="key" value="@Model?.Word.KeyWord" />
+                                            <button class="d-none" type="submit">submit</button>
+                                        </form>
+                                    </li>
+                                    @for (int i = 0; i < Model?.Categories?.Count; i++) {
+                                        <li>
+                                            <a class="btn btn-link text-decoration-none text-dark text-capitalize w-100 text-start" asp-action="SaveWord" asp-route-key="@Model!.Word.KeyWord" asp-route-category="@Model.Categories[i].Name">
+                                                @Model?.Categories[i].Name
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    </div>
+                    <h6 class="card-subtitle my-2 text-muted">@Model?.Word?.PartOfSpeech</h6>
+                    <p class="card-text">@Model?.Word?.Meaning</p>
+                </div>
+            }
         </div>
     </div>
 </div>

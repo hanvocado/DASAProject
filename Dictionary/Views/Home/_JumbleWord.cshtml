@@ -2,7 +2,7 @@
 
 <div class="px-4">
     <div class="fw-bold">@Model.Word.Def</div>
-    <div class="text-uppercase py-4 text-center letter-space-lg">@Model.Word.ShuffledWord</div>
+    <div class="text-uppercase py-4 text-center letter-space-lg fs-5">@Model.Word.ShuffledWord</div>
     <form method="post" id="wjGame" autocomplete="off">
         <div class="input-group">
             <input type="hidden" id="originalWord" value="@Model.Word.KeyWord" />
@@ -11,7 +11,7 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </form>
-    <div class="text-end my-5">
-        <a class="btn btn-secondary" asp-action="Library" asp-controller="Home">Exit</a>
+    <div class="text-center mt-5">
+        <a class="btn btn-secondary mt-5" asp-action="Library" asp-controller="Home">Exit</a>
     </div>
 </div>

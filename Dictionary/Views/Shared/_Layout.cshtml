@@ -11,7 +11,15 @@
 <body>
     @await Html.PartialAsync("_Modal")
     <div class="container-fluid m-auto">
-        @RenderBody()
+        <div class="row vertical-center h-100">
+            <div class="col-sm-12 col-md-8 m-auto">
+                <div class="height-400">
+                    <div class="card align-middle h-100">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     
